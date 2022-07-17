@@ -1,103 +1,55 @@
 ''' 
 --------------------------------------
   Universidad del Valle de Guatemala
-  Autor: Diego Cordova
-  Carne: 20212
-  Last modified (yy-mm-dd): 2022-07-14
+  Author: Diego Cordova - 20212
+
+  main.py
+  - main program to write files
+  
+  Last modified (yy-mm-dd): 2022-07-17
 --------------------------------------
 '''
 
-from Render import Render
-from util import color
+from src.gl import *
 
-# ----- Funciones
+def square_param(limit = 1):
+  ''' Draws an squere parameter in the viewport '''
+  limit_d = limit * -1
 
-def glInit():
-  global SR
-  SR = Render()
+  for i in range(2):
+    x = limit_d
 
-def sr_isInit():
-  try:
-    SR.current_color
-    return False
+    while x <= limit:
+      y = limit_d
 
-  except NameError:
-    print('ERROR: Software Renderer not initialized\n\
-       execute glInit before any action\n\
-    ')
-    return True
+      while y <= limit:
+        if i == 0:
+          glVertex(x, y)
+        else:
+          glVertex(y, x)
 
-def glCreateWindow(width, height):
-  if sr_isInit(): return
-  SR.initWindow(width=width, height=height)
-
-def glCreateViewPort(width, height):
-  if sr_isInit(): return
-  SR.initViewPort(width=width, height=height)
-
-def glClear():
-  if sr_isInit(): return
-  SR.clear()
-
-def glCLearColor(r, g, b):
-  if sr_isInit(): return
-  SR.set_clear_color(color(r, g, b))
-
-def glColor(r, g, b):
-  if sr_isInit(): return
-  SR.set_current_color(color(r, g, b))
-
-def glFinish(fileName):
-  if sr_isInit(): return
-  try:
-    SR.write(fileName + '.bmp')
-    print('File', fileName + '.bmp', 'written succesfully!!')
-  except:
-    print('ERROR during file writting')
-  
-def glVertex(x, y):
-  if sr_isInit(): return
-  if x < -1 or x > 1: return print('invalid coordinates:', [x, y])
-  if y < -1 or y > 1: return print('invalid coordinates:', [x, y])
-
-  v_width = SR.viewPort_w - 1
-  v_height = SR.viewPort_h - 1
-  x_offset = SR.x_offset
-  y_offset = SR.y_offset
-
-  x_normal = int(v_width * (x + 1)/2 + x_offset)
-  y_normal = int(v_height * (y + 1)/2 + y_offset)
-  
-  SR.point(x_normal, y_normal)
+        y += 0.001
+      
+      x += limit * 2
 
 # ----- main
 
-glInit()
+glInit() # Initalization
 
-glCreateWindow(200, 200)
-glCreateViewPort(180, 180)
-print([SR.x_offset, SR.y_offset])
+# Viewport and window initialization
+glCreateWindow(1700, 2000)
+glCreateViewPort(900, 1500)
 
+# Clear of the window
 glCLearColor(0, 0, 0)
 glClear()
 
-glColor(0, 0.5, 1)
-
-x, y = -1, -1
-while y <= 1:
-  x = -1
-  while x <= 1:
-    glVertex(x, y)
-    x += .004008
-
-  y += .004008
-
+# Squares draw
 glColor(1, 0, 0)
-glVertex(0, 0)
-glVertex(1, 1)
-glVertex(-1, -1)
-glVertex(-1, 1)
-glVertex(1, -1)
+limit = 501
+ls = [x/limit for x in range(1, limit)]
+for i in ls:
+  square_param(i)
 
-
+# File writting (rendering)
 glFinish('out')
