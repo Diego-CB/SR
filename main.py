@@ -12,8 +12,8 @@
 
 from src.gl import *
 
-def square_param(limit = 1):
-  ''' Draws an squere parameter in the viewport '''
+def square_perim(limit = 1):
+  ''' Draws an square perimeter in the viewport '''
   limit_d = limit * -1
 
   for i in range(2):
@@ -49,7 +49,7 @@ glColor(1, 0, 0)
 limit = 501
 ls = [x/limit for x in range(1, limit)]
 for i in ls:
-  square_param(i)
+  square_perim(i)
 
 # File writting (rendering)
 glFinish('out')
