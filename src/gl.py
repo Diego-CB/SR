@@ -4,7 +4,8 @@
   Author: Diego Cordova - 20212
 
   gl.py
-  - Applies the 
+  - Uses de Renderer Object to
+    write bmp files
 
   Last modified (yy-mm-dd): 2022-07-17
 --------------------------------------
@@ -32,23 +33,27 @@ def sr_isInit():
        execute glInit before any action\n\
     ')
 
-def glCreateWindow(width, height):
+def glCreateWindow(width: int, height: int):
   ''' Initialize Window of image '''
   sr_isInit()
   SR.initWindow(width=width, height=height)
 
-def glCreateViewPort(width, height):
+def glCreateViewPort(width: int, height: int):
   ''' Initialize viewport of image '''
   sr_isInit()
   SR.initViewPort(width=width, height=height)
-  global v_width
-  global v_height
-  global x_offset 
+  global v_width_d
+  global v_height_d
+  global v_width_u
+  global v_height_u
+  global x_offset
   global y_offset 
-  v_width = SR.viewPort_w - 1
-  v_height = SR.viewPort_h - 1
-  x_offset = SR.x_offset
-  y_offset = SR.y_offset
+  v_width_d = int((SR.viewPort_w - 1) / 2)
+  v_height_d = int((SR.viewPort_h - 1) / 2)
+  v_width_u = int(SR.viewPort_w / 2)
+  v_height_u = int(SR.viewPort_h / 2)
+  x_offset = int((SR.window_w - width) / 2)
+  y_offset = int((SR.window_h - height) / 2)
 
 def glClear():
   ''' Fills image with one plain color (clear_color)'''
@@ -81,10 +86,28 @@ def denormalize(x, y):
     inside the viewport
   '''
   sr_isInit()
-  x_normal = int(v_width * (x + 1)/2 + x_offset)
-  y_normal = int(v_height * (y + 1)/2 + y_offset)
+
+  x_normal: int
+  y_normal: int
+  actual_w = v_width_d if x <= 0 else v_width_d + 0.1
+  actual_h = v_height_d if y <= 0 else v_height_d + 0.1
+
+  if x == 1:
+    x_normal = int(actual_w * 2 + x_offset + 1)
+  elif x == -1:
+    x_normal = x_offset
+  else:
+    x_normal = int(actual_w * (x + 1)) + x_offset
+
+  if y == 1:
+    y_normal = int(actual_h * 2 + y_offset + 1)
+  elif y == -1:
+    y_normal = y_offset
+  else:
+    y_normal = int(actual_h * (y + 1)) + y_offset
+
   return x_normal, y_normal
-  
+
 def glVertex(x, y):
   ''' writes a pixel inside the viewport '''
   sr_isInit()
@@ -92,3 +115,38 @@ def glVertex(x, y):
   if y < -1 or y > 1: raise Exception('invalid coordinates:', [x, y])
 
   SR.point(*denormalize(x, y))
+
+def glLine(x0, y0, x1, y1):
+  sr_isInit()
+  SR.line(
+    *denormalize(x0, y0), 
+    *denormalize(x1, y1)
+  )
+
+def square_perim(limit = 1):
+  ''' Draws an square perimeter in the viewport '''
+  limit_d = limit * -1
+
+  for i in range(2):
+    x = limit_d
+
+    while x <= limit:
+      y = limit_d
+
+      while y <= limit:
+        if i == 0:
+          glVertex(x, y)
+        else:
+          glVertex(y, x)
+
+        y += 0.001
+      
+      x += limit * 2
+
+def square_perim(limit = 1):
+  ''' Draws an square perimeter in the viewport '''
+  glLine(-limit, limit, limit, limit)
+  glLine(-limit, -limit, limit, -limit)
+  
+  glLine(-limit, -limit, -limit, limit)
+  glLine(limit, -limit, limit, limit)

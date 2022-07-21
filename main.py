@@ -12,44 +12,36 @@
 
 from src.gl import *
 
-def square_perim(limit = 1):
-  ''' Draws an square perimeter in the viewport '''
-  limit_d = limit * -1
-
-  for i in range(2):
-    x = limit_d
-
-    while x <= limit:
-      y = limit_d
-
-      while y <= limit:
-        if i == 0:
-          glVertex(x, y)
-        else:
-          glVertex(y, x)
-
-        y += 0.001
-      
-      x += limit * 2
-
 # ----- main
 
 glInit() # Initalization
 
 # Viewport and window initialization
-glCreateWindow(1700, 2000)
-glCreateViewPort(900, 1500)
+glCreateWindow(1080, 1080)
+glCreateViewPort(1000, 1000)
 
 # Clear of the window
 glCLearColor(0, 0, 0)
 glClear()
 
+
 # Squares draw
-glColor(1, 0, 0)
-limit = 501
+limit = 505
 ls = [x/limit for x in range(1, limit)]
 for i in ls:
   square_perim(i)
+
+square_perim(1)
+
+glVertex(0, 0)
+
+glColor(0, 0, 1)
+
+  
+#glLine(-1, 0, 1, 0)
+#glLine(0, -1, 0, 1)
+#glLine(-1, -1, 1, 1)
+#glLine(-1, 1, 1, -1)
 
 # File writting (rendering)
 glFinish('out')
