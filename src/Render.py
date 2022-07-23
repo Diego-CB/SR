@@ -51,8 +51,6 @@ class Render(object):
 
     self.viewPort_w = width
     self.viewPort_h = height
-    self.x_offset = (self.window_w - width) / 2
-    self.y_offset = (self.window_h - height) / 2
 
   def clear(self):
     ''' Fills framebuffer with the actual clear_color'''
@@ -73,21 +71,29 @@ class Render(object):
   def __pixel_header(self, f):
     ''' Writes Pixel Header for the file f'''
 
-    # File header (14 bytes)
+    # -------- File header --------
+    
+    # BM
     f.write(char('B'))
     f.write(char('M'))
-    f.write(dword(14 + 40 + self.window_w * self.window_h * 3))
-    f.write(dword(0))
-    f.write(dword(14 + 40))
 
-    # Image header (40 bytes)
-    f.write(dword(40))
-    f.write(dword(self.window_w))
-    f.write(dword(self.window_h))
-    f.write(word(1))
-    f.write(word(24))
-    f.write(dword(0))
-    f.write(dword(self.window_w * self.window_h * 3))
+    # Tamano del file Header + Tamano del Image Header + tamano de la imagen
+    f.write(dword(14 + 40 + self.window_w * self.window_h * 3))
+    
+    f.write(dword(0)) # 4 bytes vacios (dword)
+    f.write(dword(14 + 40)) # Tamano del file Header + Tamano del Image Header
+
+    # -------- Image header --------
+    
+    f.write(dword(40)) # Tamano del Image Header
+    f.write(dword(self.window_w)) # Ancho de la imagen
+    f.write(dword(self.window_h)) # Largo de la imagen
+    f.write(word(1)) # un word con un 1 (2 bytes)
+    f.write(word(24)) # un word con un 24 (2 bytes)
+    f.write(dword(0)) # 4 bytes vacios (dword)
+    f.write(dword(self.window_w * self.window_h * 3)) # tamano de la imagen
+    
+    # 4 dwords vacios: 4*4 bytes
     f.write(dword(0))
     f.write(dword(0))
     f.write(dword(0))
@@ -115,39 +121,34 @@ class Render(object):
     except:
       print([x, y])
 
-  def line(self, x1, y1, x2, y2):
+  def line(self, x0, y0, x1, y1):
+    '''
+      Draws a line of pixels from point
+      [x0, y0] to [x1, y1] on the viewport
+    '''
+    if x0 > x1:
+      x0, x1 = x1, x0
+      y0, y1 = y1, y0
+      
+    dy = y1 - y0
+    dx = x1 - x0
+    inverse = dy > dx
 
-    dy = abs(y2 - y1)
-    dx = abs(x2 - x1)
- 
-    steep = dy > dx
-    if steep:
-        x1, y1 = y1, x1
-        x2, y2 = y2, x2
+    if inverse:
+      x0, y0 = y0, x0
+      x1, y1 = y1, x1
+      dx, dy = dy, dx
 
-    if x1 > x2:
-        x1, x2 = x2, x1
-        y1, y2 = y2, y1
+    round_limit = dx
+    y = y0
 
-    dy = abs(y2 - y1)
-    dx = abs(x2 - x1)
+    for x in range(dx + 1):
+      augment = dy * x * 2
+      actual_x = x0 + x
 
-    offset = 0 * 2 * dx
-    threshold = 0.5 * 2 * dx
+      if augment > round_limit:
+        y += 1
+        round_limit += 2 * dx
 
-    y = y1
-    points = []
-
-    for x in range(x1, x2 + 1):
-        if steep:
-            points.append((y, x))
-        else:
-            points.append((x, y))
-        
-        offset += dy * 2
-        if offset >= threshold:
-            y += 1 if y1 < y2 else -1
-            threshold += 1 * 2 * dx
-
-    for point in points:
-        self.point(*point)
+      actual_pixel = [y, actual_x] if inverse else [actual_x, y]
+      self.point(*actual_pixel)
