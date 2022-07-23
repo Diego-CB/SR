@@ -107,6 +107,19 @@ def square_perim(limit = 1):
   glLine(-limit, -limit, -limit, limit)
   glLine(limit, -limit, limit, limit)
 
+
+def filled_square():
+  limit = round(max([SR.viewPort_h, SR.viewPort_w]) / 2)
+  ls = [x/limit for x in range(1, limit)]
+  for i in ls:
+    square_perim(i)
+
+  glVertex(0, 0)
+  glVertex(0.001, 0)
+  glVertex(0, 0.001)
+  glVertex(0.001, 0.001)
+
+
 def Bx(y):
   rangos = []
   i = 0
