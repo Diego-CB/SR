@@ -116,7 +116,10 @@ class Render(object):
 
   def point(self, x, y):
     ''' Change the color of a pixel in the framebuffer '''
-    self.framebuffer[y][x] = self.current_color
+    try:
+      self.framebuffer[y][x] = self.current_color
+    except:
+      print([x, y])
 
   def line(self, x0, y0, x1, y1):
     '''
