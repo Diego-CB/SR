@@ -17,15 +17,15 @@ from src.gl import *
 glInit() # Initalization
 
 # Viewport and window initialization
-glCreateWindow(1000, 500)
-glCreateViewPort(1000, 500)
+IMG_SIZE = [920, 430]
+glCreateWindow(*IMG_SIZE)
+glCreateViewPort(*IMG_SIZE)
 
 # Clear of the window
 glCLearColor(0, 0, 0)
 glClear()
 
 
-glColor(0, 0, 1)
 p1 = [[165, 380], [185, 360], [180, 330], [207, 345], [233, 330], [230, 360], [250, 380], [220, 385], [205, 410], [193, 383]]
 p2 = [[321, 335], [288, 286], [339, 251], [374, 302]]
 p3 = [[377, 249], [411, 197], [436, 249]]
@@ -48,10 +48,9 @@ def perim_fig(p):
       y1 = p[0][1]
 
 
-    glLined(x0, y0, x1, y1)
+    glLine(x0, y0, x1, y1)
 
-
-
+glColor(0, 0, 1)
 perim_fig(p1)
 perim_fig(p2)
 perim_fig(p3)
