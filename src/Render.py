@@ -51,8 +51,6 @@ class Render(object):
 
     self.viewPort_w = width
     self.viewPort_h = height
-    self.x_offset = (self.window_w - width) / 2
-    self.y_offset = (self.window_h - height) / 2
 
   def clear(self):
     ''' Fills framebuffer with the actual clear_color'''

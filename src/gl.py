@@ -42,6 +42,7 @@ def glCreateViewPort(width: int, height: int):
   ''' Initialize viewport of image '''
   sr_isInit()
   SR.initViewPort(width=width, height=height)
+  
   global v_width_d
   global v_height_d
   global v_width_u
