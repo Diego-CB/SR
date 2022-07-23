@@ -51,8 +51,6 @@ class Render(object):
 
     self.viewPort_w = width
     self.viewPort_h = height
-    self.x_offset = (self.window_w - width) / 2
-    self.y_offset = (self.window_h - height) / 2
 
   def clear(self):
     ''' Fills framebuffer with the actual clear_color'''
@@ -73,21 +71,29 @@ class Render(object):
   def __pixel_header(self, f):
     ''' Writes Pixel Header for the file f'''
 
-    # File header (14 bytes)
+    # -------- File header --------
+    
+    # BM
     f.write(char('B'))
     f.write(char('M'))
-    f.write(dword(14 + 40 + self.window_w * self.window_h * 3))
-    f.write(dword(0))
-    f.write(dword(14 + 40))
 
-    # Image header (40 bytes)
-    f.write(dword(40))
-    f.write(dword(self.window_w))
-    f.write(dword(self.window_h))
-    f.write(word(1))
-    f.write(word(24))
-    f.write(dword(0))
-    f.write(dword(self.window_w * self.window_h * 3))
+    # Tamano del file Header + Tamano del Image Header + tamano de la imagen
+    f.write(dword(14 + 40 + self.window_w * self.window_h * 3))
+    
+    f.write(dword(0)) # 4 bytes vacios (dword)
+    f.write(dword(14 + 40)) # Tamano del file Header + Tamano del Image Header
+
+    # -------- Image header --------
+    
+    f.write(dword(40)) # Tamano del Image Header
+    f.write(dword(self.window_w)) # Ancho de la imagen
+    f.write(dword(self.window_h)) # Largo de la imagen
+    f.write(word(1)) # un word con un 1 (2 bytes)
+    f.write(word(24)) # un word con un 24 (2 bytes)
+    f.write(dword(0)) # 4 bytes vacios (dword)
+    f.write(dword(self.window_w * self.window_h * 3)) # tamano de la imagen
+    
+    # 4 dwords vacios: 4*4 bytes
     f.write(dword(0))
     f.write(dword(0))
     f.write(dword(0))

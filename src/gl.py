@@ -42,18 +42,19 @@ def glCreateViewPort(width: int, height: int):
   ''' Initialize viewport of image '''
   sr_isInit()
   SR.initViewPort(width=width, height=height)
+
   global v_width_d
   global v_height_d
   global v_width_u
   global v_height_u
   global x_offset
   global y_offset 
-  v_width_d = int((SR.viewPort_w - 1) / 2)
-  v_height_d = int((SR.viewPort_h - 1) / 2)
-  v_width_u = int(SR.viewPort_w / 2)
-  v_height_u = int(SR.viewPort_h / 2)
-  x_offset = int((SR.window_w - width) / 2)
-  y_offset = int((SR.window_h - height) / 2)
+  v_width_d = (SR.viewPort_w - 1) / 2
+  v_height_d = (SR.viewPort_h - 1) / 2
+  v_width_u = SR.viewPort_w / 2
+  v_height_u = SR.viewPort_h / 2
+  x_offset = round((SR.window_w - width) / 2)
+  y_offset = round((SR.window_h - height) / 2)
 
 def glClear():
   ''' Fills image with one plain color (clear_color)'''
