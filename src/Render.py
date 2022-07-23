@@ -112,39 +112,34 @@ class Render(object):
     ''' Change the color of a pixel in the framebuffer '''
     self.framebuffer[y][x] = self.current_color
 
-  def line(self, x1, y1, x2, y2):
+  def line(self, x0, y0, x1, y1):
+    '''
+      Draws a line of pixels from point
+      [x0, y0] to [x1, y1] on the viewport
+    '''
+    if x0 > x1:
+      x0, x1 = x1, x0
+      y0, y1 = y1, y0
+      
+    dy = y1 - y0
+    dx = x1 - x0
+    inverse = dy > dx
 
-    dy = abs(y2 - y1)
-    dx = abs(x2 - x1)
- 
-    steep = dy > dx
-    if steep:
-        x1, y1 = y1, x1
-        x2, y2 = y2, x2
+    if inverse:
+      x0, y0 = y0, x0
+      x1, y1 = y1, x1
+      dx, dy = dy, dx
 
-    if x1 > x2:
-        x1, x2 = x2, x1
-        y1, y2 = y2, y1
+    round_limit = dx
+    y = y0
 
-    dy = abs(y2 - y1)
-    dx = abs(x2 - x1)
+    for x in range(dx + 1):
+      augment = dy * x * 2
+      actual_x = x0 + x
 
-    offset = 0 * 2 * dx
-    threshold = 0.5 * 2 * dx
+      if augment > round_limit:
+        y += 1
+        round_limit += 2 * dx
 
-    y = y1
-    points = []
-
-    for x in range(x1, x2 + 1):
-        if steep:
-            points.append((y, x))
-        else:
-            points.append((x, y))
-        
-        offset += dy * 2
-        if offset >= threshold:
-            y += 1 if y1 < y2 else -1
-            threshold += 1 * 2 * dx
-
-    for point in points:
-        self.point(*point)
+      actual_pixel = [y, actual_x] if inverse else [actual_x, y]
+      self.point(*actual_pixel)

@@ -17,31 +17,14 @@ from src.gl import *
 glInit() # Initalization
 
 # Viewport and window initialization
-glCreateWindow(1080, 1080)
-glCreateViewPort(1000, 1000)
+glCreateWindow(1200, 1200)
+glCreateViewPort(600, 600)
 
 # Clear of the window
 glCLearColor(0, 0, 0)
 glClear()
 
-
-# Squares draw
-limit = 505
-ls = [x/limit for x in range(1, limit)]
-for i in ls:
-  square_perim(i)
-
-square_perim(1)
-
-glVertex(0, 0)
-
-glColor(0, 0, 1)
-
-  
-#glLine(-1, 0, 1, 0)
-#glLine(0, -1, 0, 1)
-#glLine(-1, -1, 1, 1)
-#glLine(-1, 1, 1, -1)
+filled_square()
 
 # File writting (rendering)
 glFinish('out')
