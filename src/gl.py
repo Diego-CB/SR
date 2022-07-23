@@ -153,36 +153,3 @@ def filled_square():
   glVertex(0.001, 0)
   glVertex(0, 0.001)
   glVertex(0.001, 0.001)
-
-
-def Bx(y):
-  rangos = []
-  i = 0
-
-  while i < len(SR.framebuffer[y]):
-    actual_i = i
-    
-    if SR.framebuffer[y][i] != SR.clear_color:
-      flag = True
-      rango = [actual_i, 0]
-
-      while flag:
-        rango[1] = i
-
-        if SR.framebuffer[y][i] == SR.clear_color:
-          flag = False
-          rango[1] = i - 1
-          rangos.append(rango)
-          break
-        
-        i += 1
-    i += 1
-  
-  return rangos
-
-def By(x):
-  pass
-
-def pintar():
-  pass
-
