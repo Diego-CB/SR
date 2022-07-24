@@ -14,6 +14,12 @@
 - [x] (15 puntos) Deben crear una función glColor(r, g, b) con la que se pueda cambiar el color con el que funciona glVertex(). Los parámetros deben ser números en el rango de 0 a 1.
 - [x] (05 puntos) Deben crear una función glFinish() que escriba el archivo de imagen
 
+## Estructura de Archivos
+- `src`
+  - *util.py*: Funciones de uso general.
+  - *Render.py*: Objeto interno que utiliza el software renderer.
+  - *gl.py*: Implementación de las funcionalidades del software renderer.
+- *main.py*: Programa principal
 ## 🤓 Autor
 
 Diego Cordova - 20212
