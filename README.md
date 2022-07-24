@@ -1,6 +1,7 @@
 # Lab 1 - Filling any Polygon
 
-## 🕹️ Tecnologias
+## 🕹️ Tecnologias Utilizadas
+- Python <img src="http://assets.stickpng.com/images/5848152fcef1014c0b5e4967.png">
 
 ## ✅ Rúbrica:
 
