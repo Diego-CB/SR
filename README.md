@@ -17,7 +17,13 @@
   - `util.py`: Funciones de uso general.
   - `Render.py`: Objeto interno que utiliza el software renderer.
   - `gl.py`: Implementación de las funcionalidades del software renderer.
-- `Lab1.py`: Programa principal
+- `Lab1.py`: Programa principal.
+
+## Getting Started
+
+1. Ejecute el archivo `Lab1.py` con `py ./Lab1.py`.
+2. Se Creara una carpeta **__pycache__** dentro de la carpeta **src**.
+3. Si no existen erroren en ejecución, se escribirá un achivo `out.bmp` con la imagen resultante.  
 
 ## 🤓 Autor
 
