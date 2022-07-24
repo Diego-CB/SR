@@ -6,7 +6,7 @@
   Render.py (Object)
   - Object used to render a bmp image
 
-  Last modified (yy-mm-dd): 2022-07-17
+  Last modified (yy-mm-dd): 2022-07-24
 --------------------------------------
 '''
 
@@ -116,7 +116,5 @@ class Render(object):
 
   def point(self, x, y):
     ''' Change the color of a pixel in the framebuffer '''
-    try:
-      self.framebuffer[y][x] = self.current_color
-    except:
-      print([x, y])
+    self.framebuffer[y][x] = self.current_color
+

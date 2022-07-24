@@ -3,7 +3,7 @@
   Universidad del Valle de Guatemala
   Author: Diego Cordova - 20212
 
-  main.py
+  Lab1.py
   - main program to write files
   
   Last modified (yy-mm-dd): 2022-07-24
@@ -37,10 +37,6 @@ def perim_fig(p):
       y1 = p[0][1]
 
     glLine(x0, y0, x1, y1)
-
-def points(p):
-  for n in p:
-    glVertex(*n)
 
 # ----- main
 
