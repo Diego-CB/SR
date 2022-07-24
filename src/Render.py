@@ -120,35 +120,3 @@ class Render(object):
       self.framebuffer[y][x] = self.current_color
     except:
       print([x, y])
-
-  def line(self, x0, y0, x1, y1):
-    '''
-      Draws a line of pixels from point
-      [x0, y0] to [x1, y1] on the viewport
-    '''
-    if x0 > x1:
-      x0, x1 = x1, x0
-      y0, y1 = y1, y0
-      
-    dy = y1 - y0
-    dx = x1 - x0
-    inverse = dy > dx
-
-    if inverse:
-      x0, y0 = y0, x0
-      x1, y1 = y1, x1
-      dx, dy = dy, dx
-
-    round_limit = dx
-    y = y0
-
-    for x in range(dx + 1):
-      augment = dy * x * 2
-      actual_x = x0 + x
-
-      if augment > round_limit:
-        y += 1
-        round_limit += 2 * dx
-
-      actual_pixel = [y, actual_x] if inverse else [actual_x, y]
-      self.point(*actual_pixel)

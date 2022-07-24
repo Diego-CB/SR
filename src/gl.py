@@ -7,10 +7,11 @@
   - Uses de Renderer Object to
     write bmp files
 
-  Last modified (yy-mm-dd): 2022-07-17
+  Last modified (yy-mm-dd): 2022-07-24
 --------------------------------------
 '''
 
+from operator import index
 from .Render import Render
 from .util import color
 
@@ -70,55 +71,43 @@ def glFinish(fileName):
 def glVertex(x, y):
   ''' writes a pixel inside the viewport '''
   sr_isInit()
-  if x < -1 or x > 1: raise Exception('invalid coordinates:', [x, y])
-  if y < -1 or y > 1: raise Exception('invalid coordinates:', [x, y])
-
   SR.point(x, y)
 
 def glLine(x0, y0, x1, y1):
+  '''
+    Draws a line of pixels from point
+    [x0, y0] to [x1, y1] on the viewport
+  '''
   sr_isInit()
-  SR.line(x0, y0, x1, y1)
+    
+  dy = abs(y1 - y0)
+  dx = abs(x1 - x0)
+  inverse = dy > dx
 
-def square_perim(limit = 1):
-  ''' Draws an square perimeter in the viewport '''
-  limit_d = limit * -1
+  if inverse:
+    x0, y0 = y0, x0
+    x1, y1 = y1, x1
+    dx, dy = dy, dx
 
-  for i in range(2):
-    x = limit_d
+  if x0 > x1:
+    x0, x1 = x1, x0
+    y0, y1 = y1, y0
 
-    while x <= limit:
-      y = limit_d
+  round_limit = dx
+  y = y0
 
-      while y <= limit:
-        if i == 0:
-          glVertex(x, y)
-        else:
-          glVertex(y, x)
+  for x in range(dx + 1):
+    augment = dy * x * 2
+    actual_x = x0 + x
 
-        y += 0.001
-      
-      x += limit * 2
+    if augment > round_limit:
+      y += 1 if y0 < y1 else -1
+      round_limit += 2 * dx
 
-def square_perim(limit = 1):
-  ''' Draws an square perimeter in the viewport '''
-  glLine(-limit, limit, limit, limit)
-  glLine(-limit, -limit, limit, -limit)
-  
-  glLine(-limit, -limit, -limit, limit)
-  glLine(limit, -limit, limit, limit)
+    actual_pixel = [y, actual_x] if inverse else [actual_x, y]
+    SR.point(*actual_pixel)
 
-
-def filled_square():
-  limit = round(max([SR.viewPort_h, SR.viewPort_w]) / 2)
-  ls = [x/limit for x in range(1, limit)]
-  for i in ls:
-    square_perim(i)
-
-  glVertex(0, 0)
-  glVertex(0.001, 0)
-  glVertex(0, 0.001)
-  glVertex(0.001, 0.001)
-
+# -------- Funciones para Relleno de Poligonos --------
 
 def Bx(y):
   rangos = []
@@ -126,28 +115,70 @@ def Bx(y):
 
   while i < len(SR.framebuffer[y]):
     actual_i = i
-    
+
     if SR.framebuffer[y][i] != SR.clear_color:
       flag = True
-      rango = [actual_i, 0]
 
       while flag:
-        rango[1] = i
+        i += 1
 
         if SR.framebuffer[y][i] == SR.clear_color:
           flag = False
-          rango[1] = i - 1
-          rangos.append(rango)
-          break
-        
-        i += 1
+          rangos.append([actual_i, i - 1])
+
     i += 1
   
   return rangos
 
-def By(x):
-  pass
+def By():
+  rangos_y = [[] for x in range(SR.window_w)]
+
+  for x in range(SR.window_w):
+    initial = -1
+
+    for y in range(SR.window_h):
+
+      if SR.framebuffer[y][x] != SR.clear_color:
+        if initial == -1:
+          initial = y
+
+        else:
+          if SR.framebuffer[y - 1][x] == SR.clear_color:
+            rangos_y[x].append([initial, y])
+            initial = -1
+  
+  return rangos_y
+
+#def By(x):
+#  rango = []
+#  initial = -1
+#
+#  for y in range(SR.window_h):
+#
+#    if SR.framebuffer[y][x] != SR.clear_color:
+#      if initial == -1:
+#        initial = y
+#
+#      else:
+#        if SR.framebuffer[y - 1][x] == SR.clear_color:
+#          rango.append([initial, y])
+#          initial = -1
+#  
+#  return rango
 
 def pintar():
-  pass
+  rangos_y = By()
 
+  for y in range(SR.window_h):
+    rangos_x = Bx(y)
+        
+    for n in range(len(rangos_x) - 1):
+      x0 = rangos_x[n][1]
+      x1 = rangos_x[n+1][0]
+      x_check = x0 + round((x1 - x0) / 2)
+
+      for yy in rangos_y[x_check]:
+        if y >= yy[0] and y <= yy[1]:
+          glLine(x0, y, x1, y)
+          break
+        
