@@ -7,7 +7,7 @@
   - Uses de Renderer Object to
     write bmp files
 
-  Last modified (yy-mm-dd): 2022-07-17
+  Last modified (yy-mm-dd): 2022-07-23
 --------------------------------------
 '''
 

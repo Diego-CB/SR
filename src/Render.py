@@ -6,7 +6,7 @@
   Render.py (Object)
   - Object used to render a bmp image
 
-  Last modified (yy-mm-dd): 2022-07-17
+  Last modified (yy-mm-dd): 2022-07-23
 --------------------------------------
 '''
 
