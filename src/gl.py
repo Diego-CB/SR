@@ -11,7 +11,6 @@
 --------------------------------------
 '''
 
-from operator import index
 from .Render import Render
 from .util import color
 
@@ -107,13 +106,35 @@ def glLine(x0, y0, x1, y1):
     actual_pixel = [y, actual_x] if inverse else [actual_x, y]
     SR.point(*actual_pixel)
 
-# -------- Funciones para Relleno de Poligonos --------
+# ------------ Funciones para Relleno de Poligonos ------------
 
-def Bx(y):
+def perim_fig(p:list[list]):
+  ''' Draws the contorn of a polygon based a series of points '''
+  for n in range(0, len(p)):
+    x0 = p[n][0]
+    y0 = p[n][1]
+    x1 = 0
+    y1 = 0
+
+    if n < len(p) - 1:
+      x1 = p[n+1][0]
+      y1 = p[n+1][1] 
+
+    else:
+      x1 = p[0][0]
+      y1 = p[0][1]
+
+    glLine(x0, y0, x1, y1)
+
+def Bx(y:int, x0:int, x1:int) -> list:
+  '''
+    Checks for filling area in a especific y 
+    coordinate between x0 and x1 intervals
+  '''
   rangos = []
-  i = 0
+  i = x0
 
-  while i < len(SR.framebuffer[y]):
+  while i <= x1:
     actual_i = i
 
     if SR.framebuffer[y][i] != SR.clear_color:
@@ -122,7 +143,10 @@ def Bx(y):
       while flag:
         i += 1
 
-        if SR.framebuffer[y][i] == SR.clear_color:
+        if i == SR.window_w:
+          flag = False
+          
+        elif SR.framebuffer[y][i] == SR.clear_color:
           flag = False
           rangos.append([actual_i, i - 1])
 
@@ -130,55 +154,54 @@ def Bx(y):
   
   return rangos
 
-def By():
-  rangos_y = [[] for x in range(SR.window_w)]
+def By(x: int, y0: int, y1: int) -> list:
+  '''
+    Checks for filling area in a especific x
+    coordinate between y0 and y1 intervals
+  '''
+  rango = []
+  initial = -1
 
-  for x in range(SR.window_w):
-    initial = -1
+  for y in range(y0, y1 + 1):
+    if SR.framebuffer[y][x] != SR.clear_color:
+      if initial == -1:
+        initial = y
 
-    for y in range(SR.window_h):
-
-      if SR.framebuffer[y][x] != SR.clear_color:
-        if initial == -1:
-          initial = y
-
-        else:
-          if SR.framebuffer[y - 1][x] == SR.clear_color:
-            rangos_y[x].append([initial, y])
-            initial = -1
+      else:
+        if SR.framebuffer[y - 1][x] == SR.clear_color:
+          rango.append([initial, y])
+          initial = -1
   
-  return rangos_y
+  return rango
 
-#def By(x):
-#  rango = []
-#  initial = -1
-#
-#  for y in range(SR.window_h):
-#
-#    if SR.framebuffer[y][x] != SR.clear_color:
-#      if initial == -1:
-#        initial = y
-#
-#      else:
-#        if SR.framebuffer[y - 1][x] == SR.clear_color:
-#          rango.append([initial, y])
-#          initial = -1
-#  
-#  return rango
+def get_poly_area(p:list[list]) -> int:
+  ''' Get Area in wich a a polygon is drawed '''
+  x_points:list = []
+  y_points:list = []
 
-def pintar():
-  rangos_y = By()
+  for n in p:
+    x_points.append(n[0])
+    y_points.append(n[1])
 
-  for y in range(SR.window_h):
-    rangos_x = Bx(y)
+  return (
+    min(x_points), max(x_points), 
+    min(y_points), max(y_points)
+  )
+
+def pintar(p:list[list]):
+  ''' Fills the area of a polygon with color '''
+  min_x, max_x, min_y, max_y = get_poly_area(p)
+
+  for y in range(min_y, max_y + 1):
+    rangos_x = Bx(y, min_x, max_x)
         
     for n in range(len(rangos_x) - 1):
       x0 = rangos_x[n][1]
-      x1 = rangos_x[n+1][0]
+      x1 = rangos_x[n + 1][0]
       x_check = x0 + round((x1 - x0) / 2)
+      rangos_y = By(x_check, min_y, max_y)
 
-      for yy in rangos_y[x_check]:
+      for yy in rangos_y:
         if y >= yy[0] and y <= yy[1]:
           glLine(x0, y, x1, y)
           break
-        
