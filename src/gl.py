@@ -7,7 +7,7 @@
   - Uses de Renderer Object to
     write bmp files
 
-  Last modified (yy-mm-dd): 2022-07-17
+  Last modified (yy-mm-dd): 2022-07-24
 --------------------------------------
 '''
 
@@ -110,10 +110,6 @@ def glLine(x0, y0, x1, y1):
     *denormalize(x1, y1)
   )
 
-def glLined(x0, y0, x1, y1):
-  sr_isInit()
-  SR.line(x0, y0, x1, y1)
-
 def square_perim(limit = 1):
   ''' Draws an square perimeter in the viewport '''
   limit_d = limit * -1
@@ -153,36 +149,3 @@ def filled_square():
   glVertex(0.001, 0)
   glVertex(0, 0.001)
   glVertex(0.001, 0.001)
-
-
-def Bx(y):
-  rangos = []
-  i = 0
-
-  while i < len(SR.framebuffer[y]):
-    actual_i = i
-    
-    if SR.framebuffer[y][i] != SR.clear_color:
-      flag = True
-      rango = [actual_i, 0]
-
-      while flag:
-        rango[1] = i
-
-        if SR.framebuffer[y][i] == SR.clear_color:
-          flag = False
-          rango[1] = i - 1
-          rangos.append(rango)
-          break
-        
-        i += 1
-    i += 1
-  
-  return rangos
-
-def By(x):
-  pass
-
-def pintar():
-  pass
-
