@@ -10,91 +10,70 @@
 --------------------------------------
 '''
 
+from tkinter import W
+
+
 if __name__ == '__main__':
   from src.gl import *
+  from src.Obj import Obj
 
   glInit() # Initalization
 
   # Viewport and window initialization
-  glCreateWindow(1800, 1060)
-  glCreateViewPort(1660, 1000)
+  WSIZE = [2000, 2000]
+  glCreateWindow  (*WSIZE)
+  glCreateViewPort(*WSIZE)
 
   # Clear of the window
   glCLearColor(0, 0, 0)
   glClear()
 
-  # Partes de la casa (Poligonos)
-
-  TECHO = [[-.65, .8], [.8, .8], [.6, .15], [-.98, .15]]
-  FRONT_WALL = [[-.76, .15], [.6, .15], [.6, -.75], [-.76, -.715]]
-  COLUMN = [[-.95, .15], [-.9, .15], [-.9, -.7102], [-.95, -.7045]]
-  SIDE_WALL = [
-    [.8, .8], [.6, .15], [.6, -.75], [.9, -.57], [.9, .145]
-  ]
-  WINDOW = [
-    [-.45, .15], [-.45, .26], [-.5, .265], 
-    [-.15, .75], [.14, .26], [.1, .235], [.1, .15]
-  ]
-  WALL_DIV = [[-.45, .15], [.1, .15], [.1, -.737], [-.45, -.724]]
-  TECHO2 = [
-    [-.45, .26], [-.45, .25], [-.52, .2625], [-.15, .78],
-    [.1, .6], [.18, .255], [.14, .26], [-.15, .75], [-.5, .265]
-  ]
-
-  VENT1 = [[-.4, .3], [-.15, .63], [.045, .3]]
-  VENT2 = [[-.71, -.65], [-.71, .04], [-.5, .037], [-.5, -.657]]
-  VENT3 = [[.2, -.3], [.2, 0], [.49, -.005], [.49, -.301]]
-  DOOR = [[-.35, -.7265], [-.05, -.7345], [-.05, -.09], [-.35, -.0805]]
-
-  HOUSE = [
-    TECHO, FRONT_WALL, COLUMN, SIDE_WALL, WINDOW, WALL_DIV, TECHO2,
-    VENT1, VENT2, VENT3, DOOR
-  ]
-
-  BACK = [[-1, 1], [1, 1], [1, -.028], [-1, 0]]
-  GROUND = [[-1, 0], [1, -.028], [1, -1], [-1, -1]]
-
-  # Pintado de poligonos
-
-  # Fondo
-  glColor(0, .5, .76)
-  pintar(BACK, normalized=True)
+  car = Obj('./models/Rims&Tires.obj')
   
-  glColor(.37, .72, .09)
-  pintar(GROUND, normalized=True)
-  
-  glColor(0, 0, 0)
-  perim_fig(BACK, normalized=True)
-  perim_fig(GROUND, normalized=True)
+  def transform_vertex(vertex, translate, scale):
+    return [
+      round(vertex[0] * scale[0]) + translate[0],
+      round(vertex[1] * scale[1]) + translate[1]
+    ]
 
-  # Casa
-  WALLS = [FRONT_WALL, COLUMN, SIDE_WALL, WINDOW]
-  TECHOS = [TECHO, TECHO2]
-  WINDOWS = [VENT1, VENT2, VENT3]
 
-  # Techo
-  glColor(.65, 0.2, 0)
-  for part in TECHOS:
-    pintar(part, normalized=True)
-  
-  # Paredes
-  glColor(.5, .55, .6)
-  for part in WALLS:
-    pintar(part, normalized=True)
-  
-  # Ventanas
-  glColor(.2, .66, .7)
-  for part in WINDOWS:
-    pintar(part, normalized=True)
+  scale_factor = (50, 50)
+  t_factor = (1000, 1000)
 
-  # Puerta
-  glColor(.4, .3, .25)
-  pintar(DOOR, normalized=True)
-  
-  # Dibujo de perimetros
-  glColor(0, 0, 0)
-  for part in HOUSE:
-    perim_fig(part, normalized=True)
+  #for face in car.faces:
+  #  cube_vertex = []
+  #
+  #  for actual_f in face:
+  #    temp = car.vertices[actual_f[0] - 1]
+  #    temp = transform_vertex(temp, t_factor, scale_factor)
+  #    cube_vertex.append(temp)
+  #
+  #  pintar(cube_vertex, normalized=False)
+  #
+  #  
+  #glColor(0, 0, 0)
 
-  # File writting (rendering)
+  for face in car.faces:
+    cube_vertex = []
+
+    for actual_f in face:
+      temp = car.vertices[actual_f[0] - 1]
+      temp = transform_vertex(temp, t_factor, scale_factor)
+      cube_vertex.append(temp)
+      
+    perim_fig(cube_vertex, normalized=False)
+
+  
+  #cube_vertex = []
+  #for face in cube.faces:
+  #  for actual_f in face:
+  #    temp = cube.vertices[actual_f[0] - 1]
+  #    temp = transform_vertex(temp, t_factor, scale_factor)
+  #    cube_vertex.append(temp)
+  #
+  #pintar(cube_vertex, normalized=False)
+  #
+  #glColor(0.8, 0.15, 0.1)
+  #perim_fig(cube_vertex, normalized=False)
+
   glFinish('out')

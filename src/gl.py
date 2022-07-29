@@ -11,6 +11,7 @@
 --------------------------------------
 '''
 
+from locale import normalize
 from .Render import Render
 from .util import color
 
@@ -95,20 +96,26 @@ def denormalize(x, y):
   x_normal = round(actual_w * (x + 1)) + x_offset
   return x_normal, y_normal
 
-def glVertex(x, y):
+def glVertex(x, y, normalized:bool=True):
   ''' writes a pixel inside the viewport '''
   sr_isInit()
-  if x < -1 or x > 1: raise Exception('invalid coordinates:', [x, y])
-  if y < -1 or y > 1: raise Exception('invalid coordinates:', [x, y])
+  if normalized:
+    if x < -1 or x > 1: raise Exception('invalid coordinates:', [x, y])
+    if y < -1 or y > 1: raise Exception('invalid coordinates:', [x, y])
 
-  SR.point(*denormalize(x, y))
+  points = denormalize(x, y) if normalized else (x, y)
+  SR.point(*points)
 
-def glLine(x0, y0, x1, y1):
+def glLine(x0, y0, x1, y1, normalized=False):
   '''
     Draws a line of pixels from point
     [x0, y0] to [x1, y1] on the viewport
   '''
   sr_isInit()
+
+  if normalized:
+    x0, y0 = denormalize(x0, y0)
+    x1, y1 = denormalize(x1, y1)
     
   dy = abs(y1 - y0)
   dx = abs(x1 - x0)
@@ -129,13 +136,12 @@ def glLine(x0, y0, x1, y1):
   for x in range(dx + 1):
     augment = dy * x * 2
     actual_x = x0 + x
+    actual_pixel = [y, actual_x] if inverse else [actual_x, y]
+    SR.point(*actual_pixel)
 
     if augment > round_limit:
       y += 1 if y0 < y1 else -1
       round_limit += 2 * dx
-
-    actual_pixel = [y, actual_x] if inverse else [actual_x, y]
-    SR.point(*actual_pixel)
 
 # ------------ Funciones para Relleno de Poligonos ------------
 
