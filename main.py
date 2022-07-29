@@ -10,9 +10,6 @@
 --------------------------------------
 '''
 
-from tkinter import W
-
-
 if __name__ == '__main__':
   from src.gl import *
   from src.Obj import Obj
