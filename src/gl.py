@@ -117,31 +117,7 @@ def glLine(x0, y0, x1, y1, normalized=False):
     x0, y0 = denormalize(x0, y0)
     x1, y1 = denormalize(x1, y1)
     
-  dy = abs(y1 - y0)
-  dx = abs(x1 - x0)
-  inverse = dy > dx
-
-  if inverse:
-    x0, y0 = y0, x0
-    x1, y1 = y1, x1
-    dx, dy = dy, dx
-
-  if x0 > x1:
-    x0, x1 = x1, x0
-    y0, y1 = y1, y0
-
-  round_limit = dx
-  y = y0
-
-  for x in range(dx + 1):
-    augment = dy * x * 2
-    actual_x = x0 + x
-    actual_pixel = [y, actual_x] if inverse else [actual_x, y]
-    SR.point(*actual_pixel)
-
-    if augment > round_limit:
-      y += 1 if y0 < y1 else -1
-      round_limit += 2 * dx
+  SR.line(x0, y0, y0, y1)
 
 # ------------ Funciones para Relleno de Poligonos ------------
 
@@ -155,122 +131,17 @@ def denormalize_poly(p:list[list]) -> list[list]:
 
 def perim_fig(p:list[list], normalized=True):
   ''' Draws the contorn of a polygon based a series of points '''
-
   if normalized == True:
     p = denormalize_poly(p)
 
-  for n in range(0, len(p)):
-    x0 = p[n][0]
-    y0 = p[n][1]
-    x1 = 0
-    y1 = 0
-
-    if n < len(p) - 1:
-      x1 = p[n+1][0]
-      y1 = p[n+1][1] 
-
-    else:
-      x1 = p[0][0]
-      y1 = p[0][1]
-
-    glLine(x0, y0, x1, y1)
-
-def Bx(y:int, x0:int, x1:int) -> list:
-  '''
-    Checks for filling area in a especific y 
-    coordinate between x0 and x1 intervals
-  '''
-  rangos = []
-  i = x0
-
-  while i <= x1:
-    actual_i = i
-
-    if SR.framebuffer[y][i] == SR.current_color:
-      flag = True
-
-      while flag:
-        i += 1
-
-        if i == SR.window_w:
-          flag = False
-          
-        elif SR.framebuffer[y][i] != SR.current_color:
-          flag = False
-          rangos.append([actual_i, i - 1])
-
-    i += 1
-  
-  return rangos
-
-def By(x: int, y0: int, y1: int) -> list:
-  '''
-    Checks for filling area in a especific x
-    coordinate between y0 and y1 intervals
-  '''
-  rango = []
-  initial = -1
-
-  for y in range(y0, y1 + 1):
-    if SR.framebuffer[y][x] == SR.current_color:
-      if initial == -1:
-        initial = y
-
-      else:
-        if SR.framebuffer[y - 1][x] != SR.current_color:
-          rango.append([initial, y])
-          initial = -1
-  
-  return rango
-
-def get_poly_area(p:list[list]) -> int:
-  ''' Get Area in wich a a polygon is drawed '''
-  x_points:list = []
-  y_points:list = []
-
-  for n in p:
-    x_points.append(n[0])
-    y_points.append(n[1])
-
-  return (
-    min(x_points), max(x_points), 
-    min(y_points), max(y_points)
-  )
+  SR.draw_perim_fig(p)
 
 def pintar(p:list[list], normalized=True):
   ''' Fills the area of a polygon with color '''
-
   if normalized == True:
     p = denormalize_poly(p)
   
-  perim_fig(p, normalized=False)
-  min_x, max_x, min_y, max_y = get_poly_area(p)
+  SR.paint_face(p)
 
-  for y in range(min_y, max_y + 1):
-    rangos_x = Bx(y, min_x, max_x)
-        
-    for n in range(len(rangos_x) - 1):
-      x0 = rangos_x[n][1]
-      x1 = rangos_x[n + 1][0]
-      x_check = x0 + round((x1 - x0) / 2)
-      rangos_y = By(x_check, min_y, max_y)
-
-      for yy in rangos_y:
-        if y >= yy[0] and y <= yy[1]:
-          glLine(x0, y, x1, y)
-          break
-
-# -------- Funciones Extra --------
-
-def square_perim(limit = 1):
-  ''' Draws an square perimeter in the viewport '''
-  glLine(-limit, limit, limit, limit)
-  glLine(-limit, -limit, limit, -limit)
-  
-  glLine(-limit, -limit, -limit, limit)
-  glLine(limit, -limit, limit, limit)
-
-def filled_square(n):
-  ''' Draws n sauqre perimeters into the viewport'''
-  for i in [x/n for x in range(1, n)]:
-    square_perim(i)
+def wireframe_model(model_path, transform, scale, vertex_to_draw = (0, 1)):
+  SR.draw_wireframe_model(model_path, transform, scale, vertex_to_draw)

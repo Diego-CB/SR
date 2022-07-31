@@ -1,5 +1,14 @@
+''' 
+--------------------------------------
+  Universidad del Valle de Guatemala
+  Author: Diego Cordova - 20212
 
-from fileinput import filename
+  Obj.py (Object)
+  - Object used to read .obj models
+
+  Last modified (yy-mm-dd): 2022-07-29
+--------------------------------------
+'''
 
 class Obj(object):
   def __init__(self, filename):
@@ -26,6 +35,3 @@ class Obj(object):
             list(map(int, face.split('/')))
               for face in value.split(' ')
           ])
-
-
-  
