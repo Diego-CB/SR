@@ -120,7 +120,6 @@ class Render(object):
     if 0 < x < self.window_w and 0 < y < self.window_h:
       self.framebuffer[y][x] = self.current_color
 
-
   def line(self, x0, y0, x1, y1):
     '''
       Draws a line of pixels from point
@@ -152,6 +151,8 @@ class Render(object):
         y += 1 if y0 < y1 else -1
         round_limit += 2 * dx
 
+  # ---------- Drawing of Polygons
+
   def draw_perim_fig(self, p:list[list]):
     ''' Draws the contorn of a polygon based a series of points '''
 
@@ -170,8 +171,6 @@ class Render(object):
         y1 = p[0][1]
 
       self.line(x0, y0, x1, y1)
-
-  # ---------- Drawing of Polygons
 
   def get_x_DrawRange(self, y:int, x0:int, x1:int) -> list:
     '''
@@ -258,12 +257,14 @@ class Render(object):
   # ---------- Drawing of models
   
   def __transform_vertex(self, vertex, translate, scale, vertex_to_draw):
+    '''Returns the coordinates of a vertex centered to the screen'''
     return [
       round(vertex[vertex_to_draw[0]] * scale[0]) + translate[0],
       round(vertex[vertex_to_draw[1]] * scale[1]) + translate[1]
     ]
 
   def draw_wireframe_model(self, model_path, transform, scale, vertex_to_draw):
+    ''' Reads an obj file and draws a wireframe of it in the viewport '''
     model = Obj(model_path)
 
     for face in model.faces:

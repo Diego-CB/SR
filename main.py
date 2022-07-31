@@ -26,12 +26,15 @@ if __name__ == '__main__':
   glClear()
 
   glColor(0.9, 0.6, 0.28)
+  glColor(1, 1, 1)
   t = round(W / 2)
   s = round(t / 20)
   transform = (t, t)
   scale = (s, s)
+  scale = (1000, 1000)
   vertex_to_draw = (1, 2) # y, z
   model = './models/Rims&Tires.obj'
+  model = './models/cube.obj'
 
   wireframe_model(model, transform, scale, vertex_to_draw)
 

@@ -6,11 +6,20 @@
   Obj.py (Object)
   - Object used to read .obj models
 
-  Last modified (yy-mm-dd): 2022-07-29
+  Last modified (yy-mm-dd): 2022-07-31
 --------------------------------------
 '''
 
 class Obj(object):
+  '''
+  .obj file reader
+
+  Atributes
+  ---------
+  lines: lines written in the .obj file
+  vertices: Vertices of the model
+  faces: faces of the model
+  '''
   def __init__(self, filename):
     with open(filename) as f:
       self.lines = f.read().splitlines()
@@ -26,12 +35,12 @@ class Obj(object):
 
       match prefix:
         case 'v':
-          self.vertices.append(list(
-            map(float, value.split(' '))
-          ))
+          temp_vertices = [float(n) for n in value.split(' ')]
+          self.vertices.append(temp_vertices)
         
         case 'f':
-          self.faces.append([
-            list(map(int, face.split('/')))
+          temp_faces = [
+            [int(n) for n in face.split('/')]
               for face in value.split(' ')
-          ])
+          ]
+          self.faces.append(temp_faces)
