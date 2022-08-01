@@ -1,4 +1,4 @@
-# SR3: Models
+# SR: Software Renderer
 
 ## 📡 Tecnologias Utilizadas
 - Python 🐍: Modern syntax, Interpreted Languaje
