@@ -13,29 +13,28 @@
 if __name__ == '__main__':
   from src.gl import *
 
-  glInit() # Initalization
+  # Initalization
+  glInit()
 
   # Viewport and window initialization
-  W = 4000
-  WSIZE = [W, W]
-  glCreateWindow  (*WSIZE)
-  glCreateViewPort(*WSIZE)
+  W = 1640
+  glCreateWindow  (W, W)
+  glCreateViewPort(W, W)
 
   # Clear of the window
   glCLearColor(0, 0, 0)
   glClear()
 
+  # Obj Model Drawing
   glColor(0.9, 0.6, 0.28)
-  glColor(1, 1, 1)
   t = round(W / 2)
   s = round(t / 20)
   transform = (t, t)
   scale = (s, s)
-  scale = (1000, 1000)
   vertex_to_draw = (1, 2) # y, z
   model = './models/Rims&Tires.obj'
-  model = './models/cube.obj'
 
   wireframe_model(model, transform, scale, vertex_to_draw)
 
+  # File Writing
   glFinish('out')
