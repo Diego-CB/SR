@@ -8,6 +8,7 @@
 - **src**
   - `util.py`: Funciones de uso general.
   - `Render.py`: Objeto interno que utiliza el software renderer.
+  - `Obj.py`: Ibjeto interno que se utiliza para leer y cargar modelos en formato obj al framebuffer.
   - `gl.py`: Implementación de las funcionalidades del software renderer.
 - `main.py`: Programa principal
 
