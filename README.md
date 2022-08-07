@@ -6,7 +6,7 @@
 ## ✅ Rúbrica:
 
   - [x] Código fuente capaz de cargar un archivo .obj al software renderer
-  - [x] Archivo obj: `models`/`Rims&Tires.obj`
+  - [x] Archivo obj: **`models`**/`Rims&Tires.obj`
 
 ## 🗃️ Estructura de Archivos
 
