@@ -3,6 +3,11 @@
 ## 📡 Tecnologias Utilizadas
 - Python 🐍: Modern syntax, Interpreted Languaje
 
+## ✅ Rúbrica:
+
+  - [x] Código fuente capaz de cargar un archivo .obj al software renderer
+  - [x] Archivo obj: `models`/`Rims&Tires.obj`
+
 ## 🗃️ Estructura de Archivos
 
 - **models**
@@ -19,7 +24,7 @@
 ## 🕹️ Getting Started
 
 1. Ejecute el archivo `main.py` con `py ./main.py`.
-2. Se Creara una carpeta **__pycache__** dentro de la carpeta **src**.
+2. Se Creara una carpeta **`__pycache__`** dentro de la carpeta **`src`**.
 3. Si no existen errores en ejecución, se escribirá un achivo `out.bmp` con la imagen resultante.  
 
 ## 🤓 Autor
