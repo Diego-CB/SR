@@ -11,9 +11,9 @@
 --------------------------------------
 '''
 
-from locale import normalize
 from .Render import Render
 from .util import color
+from .Vector import V3
 
 def glInit():
   ''' Initialized Internal Render Object '''
@@ -143,5 +143,12 @@ def pintar(p:list[list], normalized=True):
   
   SR.paint_face(p)
 
-def wireframe_model(model_path, transform, scale, vertex_to_draw = (0, 1)):
-  SR.draw_wireframe_model(model_path, transform, scale, vertex_to_draw)
+def wireframe_model(
+  model_path, transform, scale, 
+  vertex_to_draw = (0, 1), option='draw'
+):
+  SR.wireframe_model(model_path, transform, scale, vertex_to_draw, option)
+
+  #SR.draw_perim_fig([
+  #  [A.x, A.y], [B.x, B.y], [C.x, C.y]
+  #], color)

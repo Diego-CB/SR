@@ -12,6 +12,7 @@
 
 from .util import *
 from .Obj import Obj
+from .Vector import V3
 
 class Render(object):
   '''
@@ -120,11 +121,14 @@ class Render(object):
     if 0 < x < self.window_w and 0 < y < self.window_h:
       self.framebuffer[y][x] = self.current_color
 
-  def line(self, x0, y0, x1, y1):
+  def line(self, v1, v2):
     '''
       Draws a line of pixels from point
       [x0, y0] to [x1, y1] on the viewport
     '''
+    x0, y0 = v1[0], v1[1]
+    x1, y1 = v2[0], v2[1]
+
     dy = abs(y1 - y0)
     dx = abs(x1 - x0)
     inverse = dy > dx
@@ -178,25 +182,24 @@ class Render(object):
       coordinate between x0 and x1 intervals
     '''
     rangos = []
-    i = x0
 
-    while i <= x1:
-      actual_i = i
+    while x0 <= x1:
+      actual_x = x0
 
-      if self.framebuffer[y][i] == self.current_color:
+      if self.framebuffer[y][x0] == self.current_color:
         flag = True
 
         while flag:
-          i += 1
+          x0 += 1
 
-          if i == self.window_w:
+          if x0 == self.window_w:
             flag = False
             
-          elif self.framebuffer[y][i] != self.current_color:
+          elif self.framebuffer[y][x0] != self.current_color:
             flag = False
-            rangos.append([actual_i, i - 1])
+            rangos.append([actual_x, x0 - 1])
 
-      i += 1
+      x0 += 1
     
     return rangos
 
@@ -237,11 +240,11 @@ class Render(object):
   def paint_face(self, p:list[list]):
     ''' Fills the area of a polygon with color '''
     
-    self.draw_perim_fig(p, normalized=False)
+    self.draw_perim_fig(p)
     min_x, max_x, min_y, max_y = self.__get_poly_area(p)
 
     for y in range(min_y, max_y + 1):
-      rangos_x = self.get_y_DrawRange(y, min_x, max_x)
+      rangos_x = self.get_x_DrawRange(y, min_x, max_x)
           
       for n in range(len(rangos_x) - 1):
         x0 = rangos_x[n][1]
@@ -258,12 +261,16 @@ class Render(object):
   
   def __transform_vertex(self, vertex, translate, scale, vertex_to_draw):
     '''Returns the coordinates of a vertex centered to the screen'''
-    return [
-      round(vertex[vertex_to_draw[0]] * scale[0]) + translate[0],
-      round(vertex[vertex_to_draw[1]] * scale[1]) + translate[1]
-    ]
+    return V3(
+      round(vertex[0] * scale[0]) + translate[0],
+      round(vertex[1] * scale[1]) + translate[1],
+      round(vertex[2] * scale[2]) + translate[2]
+    )
 
-  def draw_wireframe_model(self, model_path, transform, scale, vertex_to_draw):
+  def wireframe_model(
+    self, model_path, transform, 
+    scale, vertex_to_draw, option
+  ):
     ''' Reads an obj file and draws a wireframe of it in the viewport '''
     model = Obj(model_path)
 
@@ -275,4 +282,69 @@ class Render(object):
         temp = self.__transform_vertex(temp, transform, scale, vertex_to_draw)
         face_vertex.append(temp)
 
-      self.draw_perim_fig(face_vertex)
+      if option == 'draw':
+        self.draw_perim_fig(face_vertex)
+      elif option == 'paint':
+        self.paint_face(face_vertex)
+
+  # Triangules
+
+  def triangle(self, A: V3, B: V3, C: V3, color):
+    if A.y > B.y:
+      A, B = B, A
+    if A.y > C.y:
+      A, C = C, A
+    if B.y > C.y:
+      B, C = C, B
+
+    self.current_color = color
+
+    dx_ac = C.x - A.x
+    dy_ac = C.y - A.y
+
+    if dy_ac == 0:
+      return
+    
+    m_ac = dx_ac / dy_ac 
+
+    dx_ab = B.x - A.x
+    dy_ab = B.y - A.y
+
+    if dy_ab != 0:
+      m_ab = dx_ab / dy_ab
+      for y in range(A.y, B.y):
+        xi = round(A.x - m_ac * (A.y - y))
+        xf = round(A.x - m_ab * (A.y - y))
+
+        if xi > xf:
+          xi, xf = xf, xi
+
+        for x in range(xi, xf):
+          self.point(x, y)
+    
+    dx_bc = C.x - B.x
+    dy_bc = C.y - B.y
+
+    if dy_bc != 0:
+      m_bc = dx_bc / dy_bc
+
+      
+      for y in range(B.y, C.y):
+        xi = round(A.x - m_ac * (A.y - y))
+        xf = round(A.x - m_bc * (B.y - y))
+
+        if xi > xf:
+          xi, xf = xf, xi
+
+        for x in range(xi, xf):
+          self.point(x, y)
+
+  def bounding_box(self, A:V3, B:V3, C:V3):
+    xs = [A.x, B.x, C.x]
+    ys = [A.y, B.y, C.y]
+    zs = [A.z, B.z, C.z]
+
+    return (
+      V3(min(xs), min(ys), min(zs)),
+      V3(max(xs), max(ys), max(zs))
+    )

@@ -25,13 +25,15 @@ def dword(d):
   '''Package information into doubble word (4 bytes)'''
   return struct.pack('=l', d)
 
-def color(r, g, b):
+def color(r, g, b, normalized=True):
   '''Package rgb color information into bytes for bmp immages'''
-  if r < 0 or r > 1: raise Exception('invalid color:', [r, g, b])
-  if g < 0 or b > 1: raise Exception('invalid color:', [r, g, b])
-  if g < 0 or b > 1: raise Exception('invalid color:', [r, g, b])
+  if normalized:
+    if r < 0 or r > 1: raise Exception('invalid color:', [r, g, b])
+    if g < 0 or b > 1: raise Exception('invalid color:', [r, g, b])
+    if g < 0 or b > 1: raise Exception('invalid color:', [r, g, b])
 
-  r = int(255 * r)
-  g = int(255 * g)
-  b = int(255 * b)
+    r = int(255 * r)
+    g = int(255 * g)
+    b = int(255 * b)
+    
   return bytes([b, g, r])
