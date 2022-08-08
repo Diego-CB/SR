@@ -32,7 +32,7 @@ if __name__ == '__main__':
   v_to_draw = (2, 0, 1) # z, x, y
   LIGHT = (-10, 40, -100)
 
-  load_model(model, transform, scale, vertex_to_draw=v_to_draw)
+  load_model(model, transform, scale, L=LIGHT, vertex_to_draw=v_to_draw)
 
   # File Writing
   glFinish('out')
