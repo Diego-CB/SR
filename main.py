@@ -6,7 +6,7 @@
   main.py
   - main program to write files
   
-  Last modified (yy-mm-dd): 2022-07-31
+  Last modified (yy-mm-dd): 2022-08-07
 --------------------------------------
 '''
 
@@ -17,7 +17,7 @@ if __name__ == '__main__':
   glInit()
 
   # Viewport and window initialization
-  W = 2000
+  W = 1200
   glCreateWindow  (W, W)
   glCreateViewPort(W, W)
 
@@ -27,17 +27,19 @@ if __name__ == '__main__':
 
   # Obj Model Drawing
   t = round(W / 2)
-  s = round(t / 20)
-  transform = (t, t)
-  scale = (s, s)
-  vertex_to_draw = (0, 1) # y, z
+  s = round(9/10 * t)
+  s = round(t / 2.5)
+  transform = (t, t, t)
+  scale = (s, s, s)
   model = './models/Rims&Tires.obj'
+  model = './models/face.obj'
+  model = './models/cube.obj'
 
-  glColor(0.9, 0.6, 0.28)
-  wireframe_model(model, transform, scale, vertex_to_draw, 'paint')
+  load_model(model, transform, scale)
 
-  glColor(0, 0, 0)
-  wireframe_model(model, transform, scale, vertex_to_draw)
+  glColor(.7, 0, 0)
+  #wireframe_model(model, transform, scale)
 
   # File Writing
   glFinish('out')
+  gl_zBuffer('z_out', s)

@@ -12,8 +12,9 @@
 '''
 
 from .Render import Render
-from .util import color
+from .util import color as color_b
 from .Vector import V3
+from .extras import paint_face
 
 def glInit():
   ''' Initialized Internal Render Object '''
@@ -25,7 +26,6 @@ def sr_isInit():
     Checks if Internal Object is Initialized
     If not, reaises exception
   '''
-
   try:
     SR.current_color
 
@@ -59,22 +59,18 @@ def glCreateViewPort(width: int, height: int):
 
 def glClear():
   ''' Fills image with one plain color (clear_color)'''
-  sr_isInit()
   SR.clear()
 
 def glCLearColor(r, g, b):
   ''' changes clear_color'''
-  sr_isInit()
-  SR.set_clear_color(color(r, g, b))
+  SR.set_clear_color(color_b(r, g, b))
 
 def glColor(r, g, b):
   ''' changes the color for writting pixels '''
-  sr_isInit()
-  SR.set_current_color(color(r, g, b))
+  SR.set_current_color(color_b(r, g, b))
 
 def glFinish(fileName):
   ''' Writes bmp file '''
-  sr_isInit()
   try:
     SR.write(fileName + '.bmp')
     print('File', fileName + '.bmp written succesfully!!')
@@ -87,7 +83,6 @@ def denormalize(x, y):
     them into coordinates for the framebuffer
     inside the viewport
   '''
-  sr_isInit()
 
   actual_w = v_width_d if x <= 0 else v_width_u
   actual_h = v_height_d if y <= 0 else v_height_u
@@ -98,7 +93,6 @@ def denormalize(x, y):
 
 def glVertex(x, y, normalized:bool=True):
   ''' writes a pixel inside the viewport '''
-  sr_isInit()
   if normalized:
     if x < -1 or x > 1: raise Exception('invalid coordinates:', [x, y])
     if y < -1 or y > 1: raise Exception('invalid coordinates:', [x, y])
@@ -129,26 +123,28 @@ def denormalize_poly(p:list[list]) -> list[list]:
 
   return temp_a
 
-def perim_fig(p:list[list], normalized=True):
+def perim_fig(normalized=True, *p:V3):
   ''' Draws the contorn of a polygon based a series of points '''
-  if normalized == True:
-    p = denormalize_poly(p)
-
+  if normalized: p = denormalize_poly(p)
   SR.draw_perim_fig(p)
 
-def pintar(p:list[list], normalized=True):
+def pintar(*p, color=[1, 1, 1], algo='triangles', normalized=True):
   ''' Fills the area of a polygon with color '''
-  if normalized == True:
-    p = denormalize_poly(p)
-  
-  SR.paint_face(p)
+  if normalized: p = denormalize_poly(p)
+  if isinstance(color, list): color = color_b(*color)
+  paint_face(SR, p, color, algo)
 
-def wireframe_model(
-  model_path, transform, scale, 
-  vertex_to_draw = (0, 1), option='draw'
-):
-  SR.wireframe_model(model_path, transform, scale, vertex_to_draw, option)
+def pintar(A, B, C):
+  ''' Fills the area of a polygon with color '''
+  SR.triangle(V3(*A), V3(*B), V3(*C))
 
-  #SR.draw_perim_fig([
-  #  [A.x, A.y], [B.x, B.y], [C.x, C.y]
-  #], color)
+def wireframe_model(model_path, transform, scale):
+  SR.load_model(model_path, transform, scale, 'draw')
+
+def load_model(model_path, transform, scale):
+  SR.load_model(model_path, transform, scale, 'paint')
+
+def gl_zBuffer(fileName, scale):
+  ''' Writes bmp file '''
+  SR.z_write(fileName + '.bmp', scale)
+  print('ZBuffer - File', fileName + '.bmp written succesfully!!')
