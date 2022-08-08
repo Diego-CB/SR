@@ -126,8 +126,8 @@ def pintar(*p, color=[1, 1, 1], algo='triangles', normalized=True):
 def wireframe_model(model_path, transform, scale):
   SR.load_model(model_path, transform, scale, L=None, draw=True)
 
-def load_model(model_path, transform, scale, L=(0, 0, -1)):
-  SR.load_model(model_path, transform, scale, L=L, draw=False)
+def load_model(model_path, transform, scale, L=(0, 0, -1), vertex_to_draw=(0, 1, 2)):
+  SR.load_model(model_path, transform, scale, L=L, draw=False, vertex_to_draw=vertex_to_draw)
 
 # ------------ Escritura de Archivos ------------
 

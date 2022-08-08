@@ -181,17 +181,17 @@ class Render(object):
 
       self.line(V3(x0, y0), V3(x1, y1))
 
-  def __transform_vertex(self, vertex, translate, scale):
+  def __transform_vertex(self, vertex, translate, scale, vertex_to_draw=(0, 1, 2)):
     '''Returns the coordinates of a vertex centered to the screen'''
     return V3(
-      round(vertex[0] * scale[0]) + translate[0],
-      round(vertex[1] * scale[1]) + translate[1],
-      round(vertex[2] * scale[2]) + translate[2]
+      round(vertex[vertex_to_draw[0]] * scale[0]) + translate[0],
+      round(vertex[vertex_to_draw[1]] * scale[1]) + translate[1],
+      round(vertex[vertex_to_draw[2]] * scale[2]) + translate[2]
     )
 
   def load_model(
     self, model_path, transform, 
-    scale, draw, L
+    scale, draw, L, vertex_to_draw
   ):
     ''' Reads an obj file and draws a wireframe of it in the viewport '''
     model = Obj(model_path)
@@ -201,7 +201,7 @@ class Render(object):
 
       for actual_v in face:
         temp = model.vertices[actual_v[0] - 1]
-        temp = self.__transform_vertex(temp, transform, scale)
+        temp = self.__transform_vertex(temp, transform, scale, vertex_to_draw)
         face_vertex.append(temp)
 
       if draw:
@@ -268,23 +268,13 @@ class Render(object):
   def poly_triangle(self, face:list[V3], L:tuple):
     if len(face) < 3: raise Exception('Invalid Polygon:', face)
     if len(face) == 3: return self.triangle(*face, L)
-
-    return print(f'polygon {face} not a trinagle')
-
-    initial_face = copy.copy(face)
-
-    while len(face) >= 3:
-      A = face.pop(0)
-      B = face.pop(0)
-      C = face.pop(0)
-      self.triangle(A, B, C)
     
-    if len(face) == 0: 
-      return
-    elif len(face) == 1:
-      self.triangle(face[0], initial_face[2], initial_face[0], L)
-    elif len(face) == 2:
-      self.triangle(face[0], face[1], initial_face[0], L)
+    if len(face) > 4: return
+
+    A, B, C, D = face
+    self.triangle(A, B, C, L)
+    self.triangle(A, C, D, L)
+
 
   def z_write(self, filename, scale):
     '''

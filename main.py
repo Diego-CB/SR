@@ -17,21 +17,22 @@ if __name__ == '__main__':
   glInit()
 
   # Viewport and window initialization
-  W = 800
+  W = 2000
   glCreateWindow  (W, W)
   glCreateViewPort(W, W)
 
   # Obj Model Drawing
   t = round(W / 2)
-  s = round(9.6/10 * t)
-  transform = (t, t, t)
-  z_scale = round(1.2 * s)
+  s = round(t / 6)
+  transform = (t, round(t * 8.1/10), t)
+  z_scale = round(6.5 * s)
   scale = (s, s, z_scale)
-  model = './models/Rims&Tires.obj'
-  model = './models/cube.obj'
-  model = './models/face.obj'
 
-  load_model(model, transform, scale, L=(-0.3,  0.4, -1))
+  model = './models/GUITAR.obj'
+  v_to_draw = (2, 0, 1) # z, x, y
+  LIGHT = (-10, 40, -100)
+
+  load_model(model, transform, scale, L=LIGHT, vertex_to_draw=v_to_draw)
 
   # File Writing
   glFinish('out')
