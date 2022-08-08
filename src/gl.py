@@ -7,7 +7,7 @@
   - Uses de Renderer Object to
     write bmp files
 
-  Last modified (yy-mm-dd): 2022-07-24
+  Last modified (yy-mm-dd): 2022-08-08
 --------------------------------------
 '''
 
@@ -69,21 +69,12 @@ def glColor(r, g, b):
   ''' changes the color for writting pixels '''
   SR.set_current_color(color_b(r, g, b))
 
-def glFinish(fileName):
-  ''' Writes bmp file '''
-  try:
-    SR.write(fileName + '.bmp')
-    print('File', fileName + '.bmp written succesfully!!')
-  except:
-    print('ERROR during file writting')
-
 def denormalize(x, y):
   ''' 
     Takes normalized coordinates and transforms
     them into coordinates for the framebuffer
     inside the viewport
   '''
-
   actual_w = v_width_d if x <= 0 else v_width_u
   actual_h = v_height_d if y <= 0 else v_height_u
 
@@ -111,17 +102,13 @@ def glLine(x0, y0, x1, y1, normalized=False):
     x0, y0 = denormalize(x0, y0)
     x1, y1 = denormalize(x1, y1)
     
-  SR.line(x0, y0, y0, y1)
+  SR.line(V3(x0, y0), V3(y0, y1))
 
 # ------------ Funciones para Relleno de Poligonos ------------
 
 def denormalize_poly(p:list[list]) -> list[list]:
-  temp_a = []
-
-  for n in range(len(p)):
-    temp_a.append([*denormalize(*p[n])])
-
-  return temp_a
+  '''Denormalizes the coordinates of a polygon (array of coordinates)'''
+  return [ [ *denormalize(*p[n]) ] for n in range(len(p)) ]
 
 def perim_fig(normalized=True, *p:V3):
   ''' Draws the contorn of a polygon based a series of points '''
@@ -134,17 +121,22 @@ def pintar(*p, color=[1, 1, 1], algo='triangles', normalized=True):
   if isinstance(color, list): color = color_b(*color)
   paint_face(SR, p, color, algo)
 
-def pintar(A, B, C):
-  ''' Fills the area of a polygon with color '''
-  SR.triangle(V3(*A), V3(*B), V3(*C))
+# ------------ Carga de modelos ------------
 
 def wireframe_model(model_path, transform, scale):
-  SR.load_model(model_path, transform, scale, 'draw')
+  SR.load_model(model_path, transform, scale, L=None, draw=True)
 
-def load_model(model_path, transform, scale):
-  SR.load_model(model_path, transform, scale, 'paint')
+def load_model(model_path, transform, scale, L=(0, 0, -1)):
+  SR.load_model(model_path, transform, scale, L=L, draw=False)
+
+# ------------ Escritura de Archivos ------------
 
 def gl_zBuffer(fileName, scale):
-  ''' Writes bmp file '''
+  ''' Writes the Z-Buffer to a bmp file '''
   SR.z_write(fileName + '.bmp', scale)
-  print('ZBuffer - File', fileName + '.bmp written succesfully!!')
+  print(f'-> Z-Buffer written succesfully to: {fileName}.bmp')
+
+def glFinish(fileName):
+  ''' Writes the FrameBuffer to a bmp file '''
+  SR.write(fileName + '.bmp')
+  print(f'-> FrameBuffer written succesfully to: {fileName}.bmp')

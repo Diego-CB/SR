@@ -30,8 +30,9 @@
 
 1. Ejecute el archivo `main.py`.
 2. Se Creara una carpeta **`__pycache__`** dentro de la carpeta **`src`**.
-3. Si no existen errores en ejecución, se escribirá un achivo `out.bmp` con la imagen resultante. 
-   (Es posible cambiar el nombre del archivo de la imagen en `main.py`) 
+3. Si no existen errores en ejecución, se escribirá un achivo `out.bmp` con la imagen contenida en el FrameBuffer. 
+4. Si no existen errores en ejecución, se escribirá un achivo `z_out.bmp` con la imagen contenida en el z-Buffer. 
+   (Es posible cambiar el nombre de los archivos de imagen en `main.py`) 
 
 ## 🤓 Autor
 

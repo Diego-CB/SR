@@ -6,7 +6,7 @@
   Render.py (Object)
   - Object used to render a bmp image
 
-  Last modified (yy-mm-dd): 2022-07-31
+  Last modified (yy-mm-dd): 2022-08-08
 --------------------------------------
 '''
 
@@ -126,7 +126,7 @@ class Render(object):
 
   def point(self, x, y):
     ''' Change the color of a pixel in the framebuffer '''
-    if 0 < x < self.window_w and 0 < y < self.window_h:
+    if 0 <= x < self.window_w and 0 <= y < self.window_h:
       self.framebuffer[y][x] = self.current_color
 
   def line(self, v1:V3, v2:V3):
@@ -169,8 +169,7 @@ class Render(object):
     for n in range(0, len(p)):
       x0 = p[n].x
       y0 = p[n].y
-      x1 = 0
-      y1 = 0
+      x1, y1 = 0, 0
 
       if n < len(p) - 1:
         x1 = p[n+1].x
@@ -192,7 +191,7 @@ class Render(object):
 
   def load_model(
     self, model_path, transform, 
-    scale, option = 'draw'
+    scale, draw, L
   ):
     ''' Reads an obj file and draws a wireframe of it in the viewport '''
     model = Obj(model_path)
@@ -205,57 +204,55 @@ class Render(object):
         temp = self.__transform_vertex(temp, transform, scale)
         face_vertex.append(temp)
 
-      action = self.draw_perim_fig if option == 'draw' else self.poly_triangle
-      action(face_vertex)
+      if draw:
+        self.draw_perim_fig(face_vertex)
+      else:
+        self.poly_triangle(face_vertex, L)
 
   # Triangles
 
-  def bounding_box(self, A:V3, B:V3, C:V3):
-    xs = [A.x, B.x, C.x]
-    ys = [A.y, B.y, C.y]
-    zs = [A.z, B.z, C.z]
+  def bounding_box(self, *polygon:V3) -> tuple[V3]:
+    x = [ vertex.x for vertex in polygon ]
+    y = [ vertex.y for vertex in polygon ]
+    z = [ vertex.z for vertex in polygon ]
 
-    return (
-      V3(min(xs), min(ys), min(zs)),
-      V3(max(xs), max(ys), max(zs))
-    )
+    Min = V3(min(x), min(y), min(z))
+    Max = V3(max(x), max(y), max(z))
+    Min.round()
+    Max.round()
+
+    return Min, Max
 
   def barycentric(self, A:V3, B:V3, C:V3, P:V3):
-    operation = cross(
+    cx, cy, cz = cross(
       V3(B.x - A.x, C.x - A.x, A.x - P.x),
       V3(B.y - A.y, C.y - A.y, A.y - P.y)
     )
     
-    cx = operation.x
-    cy = operation.y
-    cz = operation.z
-    
-    if abs(operation.z) < 1:
-      return -1, -1, -1   # this triangle is degenerate, return anything outside
+    if abs(cz) < 1: return -1, -1, -1
     
     w = 1 - (cx + cy) / cz
     v = cy / cz
     u = cx / cz
     
     return w, v, u
-
-  def triangle(self, A:V3, B:V3, C:V3, paint_color=[255, 255, 255]):
-    L = V3(0, 0, -1)
+    
+  def triangle(self, A:V3, B:V3, C:V3, L:tuple, paint_color=[255, 255, 255]):
+    L = V3(*L)
     N = (C - A) @ (B - A)
     i = L.normalize() * N.normalize()
+    i = round(i, 6)
 
     if i < 0: return
 
     self.current_color = color(
-      paint_color[0] * i,
-      paint_color[1] * i,
-      paint_color[2] * i,
+      round(paint_color[0] * i),
+      round(paint_color[1] * i),
+      round(paint_color[2] * i),
       normalized=False
     )
 
     Min, Max = self.bounding_box(A, B, C)
-    Min.round()
-    Max.round()
 
     for x in range(Min.x, Max.x + 1):
       for y in range(Min.y, Max.y + 1):
@@ -268,9 +265,11 @@ class Render(object):
           self.zBuffer[y][x] = z
           self.point(x, y)
 
-  def poly_triangle(self, face:list[V3]):
+  def poly_triangle(self, face:list[V3], L:tuple):
     if len(face) < 3: raise Exception('Invalid Polygon:', face)
-    if len(face) == 3: return self.triangle(*face)
+    if len(face) == 3: return self.triangle(*face, L)
+
+    return print(f'polygon {face} not a trinagle')
 
     initial_face = copy.copy(face)
 
@@ -283,9 +282,9 @@ class Render(object):
     if len(face) == 0: 
       return
     elif len(face) == 1:
-      self.triangle(face[0], initial_face[2], initial_face[0])
+      self.triangle(face[0], initial_face[2], initial_face[0], L)
     elif len(face) == 2:
-      self.triangle(face[0], face[1], initial_face[0])
+      self.triangle(face[0], face[1], initial_face[0], L)
 
   def z_write(self, filename, scale):
     '''
@@ -300,7 +299,7 @@ class Render(object):
       for x in range(self.window_w):
         z = self.zBuffer[y][x]
         z = 0 if z < 0 else z
-        z = z / (scale * 2)
+        z = z / (scale * 3)
         z = 1 if z > 1 else z
         z_color = color(z, z, z)
         f.write(z_color)
