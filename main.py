@@ -17,7 +17,7 @@ if __name__ == '__main__':
   glInit()
 
   # Viewport and window initialization
-  W = 2000
+  W = 4000
   glCreateWindow  (W, W)
   glCreateViewPort(W, W)
 

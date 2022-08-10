@@ -7,8 +7,8 @@
 
   - [x] Código fuente capaz de cargar un archivo .obj al software renderer.
   - [x] Archivo obj de su elección.
-  - [ ] Código fuente capaz de renderizar el zbuffer de su archivo obj.
-  - [ ] Código fuente capaz de renderizar el modelo usando flat shading.
+  - [x] Código fuente capaz de renderizar el zbuffer de su archivo obj.
+  - [x] Código fuente capaz de renderizar el modelo usando flat shading.
 
 ## 🗃️ Estructura de Archivos
 
