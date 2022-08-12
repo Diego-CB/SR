@@ -26,6 +26,7 @@ class Obj(object):
     
     self.vertices = []
     self.faces = []
+    self.tverctices = []
 
     for line in self.lines:
       try:
@@ -35,7 +36,11 @@ class Obj(object):
 
       match prefix:
         case 'v':
-          temp_vertices = [float(n) for n in value.split(' ')]
+          temp_vertices = [
+            float(n) for n in list(filter(
+              lambda v: v != '', value.split(' ')
+            ))
+          ]
           self.vertices.append(temp_vertices)
         
         case 'f':
@@ -44,3 +49,11 @@ class Obj(object):
               for face in value.split(' ')
           ]
           self.faces.append(temp_faces)
+
+        case 'vt':
+          temp_vertices = [
+            float(n) for n in list(filter(
+              lambda v: v != '', value.split(' ')
+            ))
+          ]
+          self.tverctices.append(temp_vertices)

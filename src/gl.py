@@ -11,10 +11,14 @@
 --------------------------------------
 '''
 
+from re import T
 from .Render import Render
 from .util import color as color_b
 from .Vector import V3
 from .extras import paint_face
+from .IO_bmp import *
+from .Texture import Texture
+from .Obj import Obj
 
 def glInit():
   ''' Initialized Internal Render Object '''
@@ -126,17 +130,53 @@ def pintar(*p, color=[1, 1, 1], algo='triangles', normalized=True):
 def wireframe_model(model_path, transform, scale, vertex_to_draw=(0, 1, 2)):
   SR.load_model(model_path, transform, scale, L=None, draw=True, vertex_to_draw=vertex_to_draw)
 
-def load_model(model_path, transform, scale, L=(0, 0, -1), vertex_to_draw=(0, 1, 2)):
-  SR.load_model(model_path, transform, scale, L=L, draw=False, vertex_to_draw=vertex_to_draw)
+def load_model(model_path, transform, scale, L=(0, 0, -1), vertex_to_draw=(0, 1, 2), texture_path=0):
+  SR.load_model(model_path, transform, scale, L=L, draw=False, vertex_to_draw=vertex_to_draw, texture_path=texture_path)
 
 # ------------ Escritura de Archivos ------------
 
 def gl_zBuffer(fileName, scale):
   ''' Writes the Z-Buffer to a bmp file '''
-  SR.z_write(fileName + '.bmp', scale)
+  z_write(fileName + '.bmp', SR.zBuffer, scale)
   print(f'-> Z-Buffer written succesfully to: {fileName}.bmp')
 
 def glFinish(fileName):
   ''' Writes the FrameBuffer to a bmp file '''
-  SR.write(fileName + '.bmp')
+  write_bmp(fileName + '.bmp', SR.framebuffer)
   print(f'-> FrameBuffer written succesfully to: {fileName}.bmp')
+
+def render_img(texture, filename):
+  T = Texture(texture)
+  SR.framebuffer = T.pixels
+
+  cube = Obj('./models/face.obj')
+
+  SR.current_color = color_b(1, 1, 1)
+  for face in cube.faces:
+    if len(face)== 3:
+      f1 = face[0][1] - 1
+      f2 = face[1][1] - 1
+      f3 = face[2][1] - 1
+
+      vt1 = V3(
+        cube.tverctices[f1][0] * T.width,
+        cube.tverctices[f1][1] * T.height
+      )
+      vt2 = V3(
+        cube.tverctices[f2][0] * T.width,
+        cube.tverctices[f2][1] * T.height
+      )
+      vt3 = V3(
+        cube.tverctices[f3][0] * T.width,
+        cube.tverctices[f3][1] * T.height
+      )
+
+      vt1.round()
+      vt2.round()
+      vt3.round()
+
+      SR.line(vt1, vt2)
+      SR.line(vt2, vt3)
+      SR.line(vt3, vt1)
+  
+  glFinish(filename)

@@ -17,23 +17,26 @@ if __name__ == '__main__':
   glInit()
 
   # Viewport and window initialization
-  W = 4000
+  W = 1024
   glCreateWindow  (W, W)
   glCreateViewPort(W, W)
 
   # Obj Model Drawing
   t = round(W / 2)
-  s = round(t / 6)
-  transform = (t, round(t * 8.1/10), t)
-  z_scale = round(6.5 * s)
+  s = round(t * 9/10)
+  transform = (t, t, t)
+  z_scale = round(s * 2)
   scale = (s, s, z_scale)
 
-  model = './models/GUITAR.obj'
+  model = './models/face.obj'
   v_to_draw = (2, 0, 1) # z, x, y
-  LIGHT = (-10, 40, -100)
+  v_to_draw = (0, 1, 2) # z, x, y
+  LIGHT = (0, 0, -100)
 
-  load_model(model, transform, scale, L=LIGHT, vertex_to_draw=v_to_draw)
+  load_model(model, transform, scale, L=LIGHT, vertex_to_draw=v_to_draw, texture_path='./models/model.bmp')
 
   # File Writing
   glFinish('out')
-  gl_zBuffer('z_out', z_scale)
+
+  #render_img('./models/model.bmp', 'model')
+
