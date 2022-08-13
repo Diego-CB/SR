@@ -25,7 +25,7 @@ if __name__ == '__main__':
   t = round(W / 2)
   s = round(t * 9/10)
   transform = (t, t, t)
-  z_scale = round(s * 2)
+  z_scale = round(s * 1.5)
   scale = (s, s, z_scale)
 
   model = './models/face.obj'
@@ -33,10 +33,11 @@ if __name__ == '__main__':
   v_to_draw = (0, 1, 2) # z, x, y
   LIGHT = (0, 0, -100)
 
-  load_model(model, transform, scale, L=LIGHT, vertex_to_draw=v_to_draw, texture_path='./models/model.bmp')
+  load_model(
+    model, transform, scale, L=LIGHT, 
+    vertex_to_draw=v_to_draw, texture_path='./models/model.bmp'
+  )
 
   # File Writing
-  glFinish('out')
-
-  #render_img('./models/model.bmp', 'model')
-
+  glFinish('./renders/out')
+  #render_img('./models/model.bmp', './renders/model')
