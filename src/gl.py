@@ -145,13 +145,15 @@ def glFinish(fileName):
   write_bmp(fileName + '.bmp', SR.framebuffer)
   print(f'-> FrameBuffer written succesfully to: {fileName}.bmp')
 
-def render_img(texture, filename):
+def render_img(texture, model, filename, color=(1, 1, 1)):
   T = Texture(texture)
+  SR.initWindow(T.width, T.height)
+  SR.initViewPort(T.width, T.height)
   SR.framebuffer = T.pixels
 
-  cube = Obj('./models/face.obj')
+  cube = Obj(model)
 
-  SR.current_color = color_b(1, 1, 1)
+  SR.current_color = color_b(*color)
   for face in cube.faces:
     if len(face)== 3:
       f1 = face[0][1] - 1
@@ -178,5 +180,82 @@ def render_img(texture, filename):
       SR.line(vt1, vt2)
       SR.line(vt2, vt3)
       SR.line(vt3, vt1)
+    
+    if len(face)== 4:
+      f1 = face[0][1] - 1
+      f2 = face[1][1] - 1
+      f3 = face[2][1] - 1
+      f4 = face[3][1] - 1
+
+      vt1 = V3(
+        cube.tverctices[f1][0] * T.width,
+        cube.tverctices[f1][1] * T.height
+      )
+      vt2 = V3(
+        cube.tverctices[f2][0] * T.width,
+        cube.tverctices[f2][1] * T.height
+      )
+      vt3 = V3(
+        cube.tverctices[f3][0] * T.width,
+        cube.tverctices[f3][1] * T.height
+      )
+      vt4 = V3(
+        cube.tverctices[f4][0] * T.width,
+        cube.tverctices[f4][1] * T.height
+      )
+
+      vt1.round()
+      vt2.round()
+      vt3.round()
+      vt4.round()
+
+      SR.line(vt1, vt2)
+      SR.line(vt2, vt3)
+      SR.line(vt3, vt4)
+      SR.line(vt4, vt1)
+    
+    if len(face)== 5:
+      f1 = face[0][1] - 1
+      f2 = face[1][1] - 1
+      f3 = face[2][1] - 1
+      f4 = face[3][1] - 1
+      f5 = face[4][1] - 1
+
+      vt1 = V3(
+        cube.tverctices[f1][0] * T.width,
+        cube.tverctices[f1][1] * T.height
+      )
+      vt2 = V3(
+        cube.tverctices[f2][0] * T.width,
+        cube.tverctices[f2][1] * T.height
+      )
+      vt3 = V3(
+        cube.tverctices[f3][0] * T.width,
+        cube.tverctices[f3][1] * T.height
+      )
+      vt4 = V3(
+        cube.tverctices[f4][0] * T.width,
+        cube.tverctices[f4][1] * T.height
+      )
+      vt5 = V3(
+        cube.tverctices[f5][0] * T.width,
+        cube.tverctices[f5][1] * T.height
+      )
+
+      vt1.round()
+      vt2.round()
+      vt3.round()
+      vt4.round()
+      vt5.round()
+
+      SR.line(vt1, vt2)
+      SR.line(vt2, vt3)
+      SR.line(vt3, vt4)
+      SR.line(vt4, vt5)
+      SR.line(vt5, vt1)
   
   glFinish(filename)
+
+def setBG(img_path):
+  img = Texture(img_path)
+  SR.framebuffer = img.pixels

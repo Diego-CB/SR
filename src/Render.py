@@ -10,6 +10,7 @@
 --------------------------------------
 '''
 
+from tkinter.messagebox import NO
 from .Texture import Texture
 from .util import *
 from .Obj import Obj
@@ -32,6 +33,7 @@ class Render(object):
   def __init__(self):
     self.current_color = color(1, 1, 1)
     self.clear_color = color(0, 0, 0)
+    self.texture = None
 
   def initWindow(self, width, height):
     '''
@@ -144,15 +146,11 @@ class Render(object):
   def load_model(
     self, model_path, transform, 
     scale, draw, L, vertex_to_draw,
-    texture_path=0
+    texture_path = None
   ):
     ''' Reads an obj file and draws a wireframe of it in the viewport '''
 
-    if texture_path == 0:
-      self.texture = 0
-    else:
-      self.texture = Texture(texture_path)
-    
+    if texture_path: self.texture = Texture(texture_path)
     model = Obj(model_path)
 
     for face in model.faces:
@@ -213,7 +211,7 @@ class Render(object):
 
     if i < 0: return
 
-    if isinstance(self.texture, Texture):
+    if self.texture:
       tA, tB, tC = t_vertices
 
     else:
@@ -228,7 +226,7 @@ class Render(object):
 
     for x in range(Min.x, Max.x + 1):
       for y in range(Min.y, Max.y + 1):
-        if x > len(self.zBuffer) - 1 or y > len(self.zBuffer[x]) - 1: continue
+        if x > len(self.zBuffer[0]) - 1 or y > len(self.zBuffer) - 1: continue
         if x < 0 or y < 0: continue
 
         w, v, u = self.barycentric(A, B, C, V3(x, y))
@@ -238,9 +236,9 @@ class Render(object):
         if self.zBuffer[y][x] < z:
           self.zBuffer[y][x] = z
 
-          if isinstance(self.texture, Texture):
-            tx = round(tA.x * w + tB.x * u + tC.x * v)
-            ty = round(tA.y * w + tB.y * u + tC.y * v)
+          if self.texture:
+            tx = tA.x * w + tB.x * u + tC.x * v
+            ty = tA.y * w + tB.y * u + tC.y * v
 
             self.current_color = self.texture.get_color(tx, ty, i)
             
@@ -253,6 +251,11 @@ class Render(object):
     if len(face) > 4: return
 
     A, B, C, D = face
-    self.triangle((A, B, C), L)
-    self.triangle((A, C, D), L)
+    if not self.texture:
+      self.triangle((A, B, C), L)
+      self.triangle((A, C, D), L)
+    else:
+      AT, BT, CT, DT = text
+      self.triangle((A, B, C), L, (AT, BT, CT))
+      self.triangle((A, C, D), L, (AT, CT, DT))
 

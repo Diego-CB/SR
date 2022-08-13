@@ -36,14 +36,12 @@ class Texture:
   def get_color(self, tx, ty, intensity=1):
     x = round(tx * self.width) - 1
     y = round(ty * self.height) - 1
+    p = self.pixels[y][x]
 
-    try:
-      p = self.pixels[y][x]
-      b = round(p[0] * intensity)
-      g = round(p[1] * intensity)
-      r = round(p[2] * intensity)
-
-      return color(r, g, b, normalized=False)
-    except:
-      print('x, y = ',[x, y])
+    return color(
+      r = round(p[2] * intensity),
+      g = round(p[1] * intensity),
+      b = round(p[0] * intensity),
+      normalized=False
+    )
 

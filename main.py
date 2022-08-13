@@ -6,38 +6,45 @@
   main.py
   - main program to write files
   
-  Last modified (yy-mm-dd): 2022-08-08
+  Last modified (yy-mm-dd): 2022-08-08 
 --------------------------------------
 '''
 
 if __name__ == '__main__':
-  from src.gl import *
+  from outs import *
+  from time import sleep
 
-  # Initalization
-  glInit()
+  def bye():
+    print('Software Rendderer ended succesfully!!\n')
 
-  # Viewport and window initialization
-  W = 1024
-  glCreateWindow  (W, W)
-  glCreateViewPort(W, W)
+  renders = {
+    's': bye,
+    '1': Mario,
+    '2': Yoshi,
+    '3': Tmap_Mario,
+    '4': Tmap_Yoshi,
+    '5': Face,
+    '6': Tmap_Face
+  }
 
-  # Obj Model Drawing
-  t = round(W / 2)
-  s = round(t * 9/10)
-  transform = (t, t, t)
-  z_scale = round(s * 1.5)
-  scale = (s, s, z_scale)
+  op = None
+  while op != 's':
 
-  model = './models/face.obj'
-  v_to_draw = (2, 0, 1) # z, x, y
-  v_to_draw = (0, 1, 2) # z, x, y
-  LIGHT = (0, 0, -100)
+    op = input('\n' +
+      'Seleccione un render:\n' +
+      '1. Render de Mario.obj\n' +
+      '2. Render de Yoshi.obj\n' +
+      '3. Texture map de Mario.obj y sus texturas\n' +
+      '4. Texture map de Yoshi.obj y sus texturas\n' +
+      '5. Render de Face.obj\n' +
+      '6. Texture map de Face.obj y sus texturas\n' +
+      's. Salir\n' +
+      ' -> '
+    )
 
-  load_model(
-    model, transform, scale, L=LIGHT, 
-    vertex_to_draw=v_to_draw, texture_path='./models/model.bmp'
-  )
+    try:
+      renders[op]()
+    except KeyError:
+      print('Error: Seleccione una opcion valida')
 
-  # File Writing
-  glFinish('./renders/out')
-  #render_img('./models/model.bmp', './renders/model')
+    sleep(1)
