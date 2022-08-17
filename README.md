@@ -1,4 +1,4 @@
-# SR: Software Renderer
+# SR4: Flat Shading
 
 ## 📡 Tecnologias Utilizadas
 - Python 🐍: Modern syntax, Interpreted Languaje
