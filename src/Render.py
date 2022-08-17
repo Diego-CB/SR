@@ -10,8 +10,6 @@
 --------------------------------------
 '''
 
-from tkinter.messagebox import NO
-from .Texture import Texture
 from .util import *
 from .Obj import Obj
 from .Vector import *
@@ -81,6 +79,52 @@ class Render(object):
     ''' Sets current_color '''
     self.current_color = current_color
 
+  def __pixel_header(self, f):
+    ''' Writes Pixel Header for the file f'''
+
+    # -------- File header --------
+    
+    # BM
+    f.write(char('B'))
+    f.write(char('M'))
+
+    # Tamano del file Header + Tamano del Image Header + tamano de la imagen
+    f.write(dword(14 + 40 + self.window_w * self.window_h * 3))
+    
+    f.write(dword(0)) # 4 bytes vacios (dword)
+    f.write(dword(14 + 40)) # Tamano del file Header + Tamano del Image Header
+
+    # -------- Image header --------
+    
+    f.write(dword(40)) # Tamano del Image Header
+    f.write(dword(self.window_w)) # Ancho de la imagen
+    f.write(dword(self.window_h)) # Largo de la imagen
+    f.write(word(1)) # un word con un 1 (2 bytes)
+    f.write(word(24)) # un word con un 24 (2 bytes)
+    f.write(dword(0)) # 4 bytes vacios (dword)
+    f.write(dword(self.window_w * self.window_h * 3)) # tamano de la imagen
+    
+    # 4 dwords vacios: 4*4 bytes
+    f.write(dword(0))
+    f.write(dword(0))
+    f.write(dword(0))
+    f.write(dword(0))
+
+  def write(self, filename):
+    '''
+      Writes a bmp file with the 
+      color information contained
+      in the framebuffer
+    '''
+    f = open(filename, 'bw')
+    self.__pixel_header(f)
+
+    for y in range(self.window_h):
+      for x in range(self.window_w):
+        f.write(self.framebuffer[y][x])
+
+    f.close
+
   def point(self, x, y):
     ''' Change the color of a pixel in the framebuffer '''
     if 0 <= x < self.window_w and 0 <= y < self.window_h:
@@ -148,31 +192,23 @@ class Render(object):
 
   def load_model(
     self, model_path, transform, 
-    scale, draw, L, vertex_to_draw,
-    texture_path = None
+    scale, draw, L, vertex_to_draw
   ):
     ''' Reads an obj file and draws a wireframe of it in the viewport '''
-
-    if texture_path: self.texture = Texture(texture_path)
     model = Obj(model_path)
 
     for face in model.faces:
       face_vertex = []
-      text_vertex = []
 
       for actual_v in face:
         temp = model.vertices[actual_v[0] - 1]
         temp = self.__transform_vertex(temp, transform, scale, vertex_to_draw)
         face_vertex.append(temp)
 
-        if isinstance(self.texture, Texture):
-          texture =  V3(*model.tverctices[actual_v[1] - 1])
-          text_vertex.append(texture)
-
       if draw:
         self.draw_perim_fig(face_vertex)
       else:
-        self.poly_triangle(face_vertex, text_vertex, L)
+        self.poly_triangle(face_vertex, L)
 
   # Triangles
 
@@ -202,15 +238,7 @@ class Render(object):
     
     return w, v, u
     
-  def triangle(
-    self, vertices:list[V3], L:tuple, t_vertices:list[V3] = (),
-    paint_color = [255, 255, 255]
-  ):
-    A, B, C = vertices
-
-    if isinstance(self.texture, Texture):
-      tA, tB, tC = t_vertices
-
+  def triangle(self, A:V3, B:V3, C:V3, L:tuple, paint_color=[255, 255, 255]):
     L = V3(*L)
     N = (C - A) @ (B - A)
     i = L.normalize() * N.normalize()
@@ -227,31 +255,44 @@ class Render(object):
 
     Min, Max = self.bounding_box(A, B, C)
 
-    for x in range(Min.x, Max.x):
-      for y in range(Min.y, Max.y):
+    for x in range(Min.x, Max.x + 1):
+      for y in range(Min.y, Max.y + 1):
         w, v, u = self.barycentric(A, B, C, V3(x, y))
 
         if w < 0 or v < 0 or u < 0: continue
         z = A.z * w + B.z * v + C.z * u
 
         if self.zBuffer[y][x] < z:
-          if y >= 0 and y <= len(self.zBuffer):
-            if x >= 0 and x <= len(self.zBuffer[0]):
-              self.zBuffer[y][x] = z
-              self.point(x, y)
+          self.zBuffer[y][x] = z
+          self.point(x, y)
 
-  def poly_triangle(self, face:list[V3], text:list[V3], L:tuple):
+  def poly_triangle(self, face:list[V3], L:tuple):
     if len(face) < 3: raise Exception('Invalid Polygon:', face)
-    if len(face) == 3: return self.triangle(face, L, text)
+    if len(face) == 3: return self.triangle(*face, L)
     
     if len(face) > 4: return
 
     A, B, C, D = face
-    if not self.texture:
-      self.triangle((A, B, C), L)
-      self.triangle((A, C, D), L)
-    else:
-      AT, BT, CT, DT = text
-      self.triangle((A, B, C), L, (AT, BT, CT))
-      self.triangle((A, C, D), L, (AT, CT, DT))
+    self.triangle(A, B, C, L)
+    self.triangle(A, C, D, L)
 
+
+  def z_write(self, filename, scale):
+    '''
+      Writes a bmp file with the 
+      color information contained
+      in the zBuffer
+    '''
+    f = open(filename, 'bw')
+    self.__pixel_header(f)
+
+    for y in range(self.window_h):
+      for x in range(self.window_w):
+        z = self.zBuffer[y][x]
+        z = 0 if z < 0 else z
+        z = z / (scale * 3)
+        z = 1 if z > 1 else z
+        z_color = color(z, z, z)
+        f.write(z_color)
+
+    f.close

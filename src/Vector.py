@@ -10,9 +10,6 @@
 --------------------------------------
 '''
 
-from ast import expr_context
-
-
 class V3(object):
   def __init__(self, x, y, z=0):
     self.x = x
@@ -65,7 +62,7 @@ class V3(object):
 
   def round(self):
     self.x = round(self.x)
-    self.y = round(self.y)
+    self.z = round(self.z)
     self.z = round(self.z)
 
   def normalize(self):
