@@ -15,6 +15,9 @@ from .Texture import Texture
 from .util import *
 from .Obj import Obj
 from .Vector import *
+import copy
+
+from random import randint
 
 class Render(object):
   '''
@@ -45,12 +48,12 @@ class Render(object):
 
     self.framebuffer = [
       [self.clear_color for y in range(self.window_h)]
-        for x in range(self.window_w)
+      for x in range(self.window_w)
     ]
     
     self.zBuffer = [
       [-9999 for y in range(self.window_h)]
-        for x in range(self.window_w)
+      for x in range(self.window_w)
     ]
 
   def initViewPort(self, width, height):
@@ -163,8 +166,8 @@ class Render(object):
         face_vertex.append(temp)
 
         if isinstance(self.texture, Texture):
-          temp_texture = V3(*model.tverctices[actual_v[1] - 1])
-          text_vertex.append(temp_texture)
+          texture =  V3(*model.tverctices[actual_v[1] - 1])
+          text_vertex.append(texture)
 
       if draw:
         self.draw_perim_fig(face_vertex)
@@ -191,11 +194,11 @@ class Render(object):
       V3(B.y - A.y, C.y - A.y, A.y - P.y)
     )
     
-    if abs(cz) <= 0: return -1, -1, -1
+    if abs(cz) < 1: return -1, -1, -1
     
+    w = 1 - (cx + cy) / cz
     v = cy / cz
     u = cx / cz
-    w = 1 - (cx + cy) / cz
     
     return w, v, u
     
@@ -204,6 +207,10 @@ class Render(object):
     paint_color = [255, 255, 255]
   ):
     A, B, C = vertices
+
+    if isinstance(self.texture, Texture):
+      tA, tB, tC = t_vertices
+
     L = V3(*L)
     N = (C - A) @ (B - A)
     i = L.normalize() * N.normalize()
@@ -211,38 +218,27 @@ class Render(object):
 
     if i < 0: return
 
-    if self.texture:
-      tA, tB, tC = t_vertices
-
-    else:
-      self.current_color = color(
-        round(paint_color[0] * i),
-        round(paint_color[1] * i),
-        round(paint_color[2] * i),
-        normalized=False
-      )
+    self.current_color = color(
+      round(paint_color[0] * i),
+      round(paint_color[1] * i),
+      round(paint_color[2] * i),
+      normalized=False
+    )
 
     Min, Max = self.bounding_box(A, B, C)
 
-    for x in range(Min.x, Max.x + 1):
-      for y in range(Min.y, Max.y + 1):
-        if x > len(self.zBuffer[0]) - 1 or y > len(self.zBuffer) - 1: continue
-        if x < 0 or y < 0: continue
-
+    for x in range(Min.x, Max.x):
+      for y in range(Min.y, Max.y):
         w, v, u = self.barycentric(A, B, C, V3(x, y))
+
         if w < 0 or v < 0 or u < 0: continue
         z = A.z * w + B.z * v + C.z * u
 
         if self.zBuffer[y][x] < z:
-          self.zBuffer[y][x] = z
-
-          if self.texture:
-            tx = tA.x * w + tB.x * u + tC.x * v
-            ty = tA.y * w + tB.y * u + tC.y * v
-
-            self.current_color = self.texture.get_color(tx, ty, i)
-            
-          self.point(x, y)
+          if y >= 0 and y <= len(self.zBuffer):
+            if x >= 0 and x <= len(self.zBuffer[0]):
+              self.zBuffer[y][x] = z
+              self.point(x, y)
 
   def poly_triangle(self, face:list[V3], text:list[V3], L:tuple):
     if len(face) < 3: raise Exception('Invalid Polygon:', face)

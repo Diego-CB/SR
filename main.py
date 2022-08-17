@@ -11,40 +11,31 @@
 '''
 
 if __name__ == '__main__':
-  from outs import *
-  from time import sleep
+  from src.gl import *
 
-  def bye():
-    print('Software Rendderer ended succesfully!!\n')
+  # Initalization
+  glInit()
 
-  renders = {
-    's': bye,
-    '1': Mario,
-    '2': Yoshi,
-    '3': Tmap_Mario,
-    '4': Tmap_Yoshi,
-    '5': Face,
-    '6': Tmap_Face
-  }
+  # Viewport and window initialization
+  W = 1024
+  glCreateWindow  (W, W)
+  glCreateViewPort(W, W)
 
-  op = None
-  while op != 's':
+  # Obj Model Drawing
+  t = round(W / 2)
+  s = round(t * 9/10)
+  transform = (t, t, t)
+  z_scale = round(s * 2)
+  scale = (s, s, z_scale)
 
-    op = input('\n' +
-      'Seleccione un render:\n' +
-      '1. Render de Mario.obj\n' +
-      '2. Render de Yoshi.obj\n' +
-      '3. Texture map de Mario.obj y sus texturas\n' +
-      '4. Texture map de Yoshi.obj y sus texturas\n' +
-      '5. Render de Face.obj\n' +
-      '6. Texture map de Face.obj y sus texturas\n' +
-      's. Salir\n' +
-      ' -> '
-    )
+  model = './models/face.obj'
+  v_to_draw = (2, 0, 1) # z, x, y
+  v_to_draw = (0, 1, 2) # z, x, y
+  LIGHT = (0, 0, -100)
 
-    try:
-      renders[op]()
-    except KeyError:
-      print('Error: Seleccione una opcion valida')
+  load_model(model, transform, scale, L=LIGHT, vertex_to_draw=v_to_draw, texture_path='./models/model.bmp')
 
-    sleep(1)
+  # File Writing
+  glFinish('out')
+
+  #render_img('./models/model.bmp', 'model')

@@ -27,12 +27,13 @@ class Texture:
         b = ord(img.read(1))
         g = ord(img.read(1))
         r = ord(img.read(1))
-        
-        actual_color = color(r, g, b, normalized=False)
-        self.pixels[y].append(actual_color)
+        self.pixels[y].append(
+          color(r, g, b, normalized=False)
+        )
 
     img.close()
       
+  
   def get_color(self, tx, ty, intensity=1):
     x = round(tx * self.width) - 1
     y = round(ty * self.height) - 1
@@ -44,4 +45,3 @@ class Texture:
       b = round(p[0] * intensity),
       normalized=False
     )
-
