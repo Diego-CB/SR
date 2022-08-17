@@ -44,4 +44,3 @@ class Texture:
       b = round(p[0] * intensity),
       normalized=False
     )
-

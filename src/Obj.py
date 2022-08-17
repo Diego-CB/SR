@@ -46,7 +46,9 @@ class Obj(object):
         case 'f':
           temp_faces = [
             [int(n) for n in face.split('/')]
-              for face in value.split(' ')
+              for face in list(filter(
+              lambda v: v != '', value.split(' ')
+            ))
           ]
           self.faces.append(temp_faces)
 

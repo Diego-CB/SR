@@ -10,9 +10,6 @@
 --------------------------------------
 '''
 
-from ast import expr_context
-
-
 class V3(object):
   def __init__(self, x, y, z=0):
     self.x = x
@@ -83,4 +80,3 @@ def cross(v1:V3, v2:V3):
     v1.z * v2.x - v1.x * v2.z,
     v1.x * v2.y - v1.y * v2.x
   )
-

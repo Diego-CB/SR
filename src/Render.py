@@ -10,7 +10,6 @@
 --------------------------------------
 '''
 
-from tkinter.messagebox import NO
 from .Texture import Texture
 from .util import *
 from .Obj import Obj

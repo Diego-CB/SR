@@ -11,11 +11,11 @@
 '''
 
 if __name__ == '__main__':
-  from outs import *
+  from Drivers import *
   from time import sleep
 
   def bye():
-    print('Software Rendderer ended succesfully!!\n')
+    print('Software Renderer ended succesfully!!\n')
 
   renders = {
     's': bye,
@@ -29,7 +29,6 @@ if __name__ == '__main__':
 
   op = None
   while op != 's':
-
     op = input('\n' +
       'Seleccione un render:\n' +
       '1. Render de Mario.obj\n' +

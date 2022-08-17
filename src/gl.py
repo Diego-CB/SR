@@ -11,11 +11,9 @@
 --------------------------------------
 '''
 
-from re import T
 from .Render import Render
 from .util import color as color_b
 from .Vector import V3
-from .extras import paint_face
 from .IO_bmp import *
 from .Texture import Texture
 from .Obj import Obj
@@ -118,12 +116,6 @@ def perim_fig(normalized=True, *p:V3):
   ''' Draws the contorn of a polygon based a series of points '''
   if normalized: p = denormalize_poly(p)
   SR.draw_perim_fig(p)
-
-def pintar(*p, color=[1, 1, 1], algo='triangles', normalized=True):
-  ''' Fills the area of a polygon with color '''
-  if normalized: p = denormalize_poly(p)
-  if isinstance(color, list): color = color_b(*color)
-  paint_face(SR, p, color, algo)
 
 # ------------ Carga de modelos ------------
 
