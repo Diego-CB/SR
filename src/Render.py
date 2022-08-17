@@ -238,23 +238,22 @@ class Render(object):
           if self.texture:
             tx = tA.x * w + tB.x * u + tC.x * v
             ty = tA.y * w + tB.y * u + tC.y * v
-
             self.current_color = self.texture.get_color(tx, ty, i)
             
           self.point(x, y)
 
   def poly_triangle(self, face:list[V3], text:list[V3], L:tuple):
     if len(face) < 3: raise Exception('Invalid Polygon:', face)
-    if len(face) == 3: return self.triangle(face, L, text)
-    
-    if len(face) > 4: return
 
-    A, B, C, D = face
-    if not self.texture:
-      self.triangle((A, B, C), L)
-      self.triangle((A, C, D), L)
-    else:
-      AT, BT, CT, DT = text
-      self.triangle((A, B, C), L, (AT, BT, CT))
-      self.triangle((A, C, D), L, (AT, CT, DT))
+    for v in range(len(face) - 2):
+      vertex = (face[0], face[v+1], face[v+2])
+
+      if not self.texture:
+        self.triangle(vertex, L)
+      else:
+        textures = (text[0], text[v+1], text[v+2])
+        self.triangle(vertex, L, textures)
+      
+
+    
 
