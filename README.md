@@ -36,9 +36,8 @@
 ## 🕹️ Getting Started
 
 1. Ejecute el archivo `main.py`.
-2. Se Creara una carpeta **`__pycache__`** dentro de la carpeta **`src`**.
-3. Se mostrará un menú con las opciones de renderización disponibles.
-4. Si no existen errores en ejecución, se escribirá un achivo `.bmp` con la imagen resultante en la carpeta **`Renders`**.
+2. Se mostrará un menú con las opciones de renderización disponibles.
+3. Si no existen errores en ejecución, se escribirá un achivo `.bmp` con la imagen resultante en la carpeta **`Renders`**.
 
 ## 🤓 Autor
 
