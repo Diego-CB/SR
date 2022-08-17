@@ -26,24 +26,25 @@ if __name__ == '__main__':
     '5': Face,
     '6': Tmap_Face
   }
+  option_menu = ('\n' +
+    'Seleccione un render:\n' +
+    '1. Render de Mario.obj\n' +
+    '2. Render de Yoshi.obj\n' +
+    '3. Texture map de Mario.obj y sus texturas\n' +
+    '4. Texture map de Yoshi.obj y sus texturas\n' +
+    '5. Render de Face.obj\n' +
+    '6. Texture map de Face.obj y sus texturas\n' +
+    's. Salir\n' +
+    ' -> '
+  )
 
-  op = None
-  while op != 's':
-    op = input('\n' +
-      'Seleccione un render:\n' +
-      '1. Render de Mario.obj\n' +
-      '2. Render de Yoshi.obj\n' +
-      '3. Texture map de Mario.obj y sus texturas\n' +
-      '4. Texture map de Yoshi.obj y sus texturas\n' +
-      '5. Render de Face.obj\n' +
-      '6. Texture map de Face.obj y sus texturas\n' +
-      's. Salir\n' +
-      ' -> '
-    )
+  option = None
+  while option != 's':
+    option = input(option_menu)
 
     try:
-      renders[op]()
+      renders[option]()
+      sleep(1)
+
     except KeyError:
       print('Error: Seleccione una opcion valida')
-
-    sleep(1)
