@@ -1,3 +1,15 @@
+''' 
+--------------------------------------
+  Universidad del Valle de Guatemala
+  Author: Diego Cordova - 20212
+
+  Op_bmp.py
+  - Utilities for reading and writting
+    of bmp files
+
+  Last modified (yy-mm-dd): 2022-08-08
+--------------------------------------
+'''
 
 from .util import *
 

@@ -7,13 +7,13 @@
   - Uses de Renderer Object to
     write bmp files
 
-  Last modified (yy-mm-dd): 2022-08-08
+  Last modified (yy-mm-dd): 2022-09-08
 --------------------------------------
 '''
 
 from .Render import Render
 from .util import color as color_b
-from .Vector import V3
+from .MStructs.Vector import V3
 from .IO_bmp import *
 from .Texture import Texture
 from .Obj import Obj

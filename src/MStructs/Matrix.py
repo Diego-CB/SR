@@ -1,3 +1,16 @@
+''' 
+--------------------------------------
+  Universidad del Valle de Guatemala
+  Author: Diego Cordova - 20212
+
+  Matrix.py
+  - Implementation of 4D vectors and
+    matrix and algebraic operations
+    between them.
+  
+  Last modified (yy-mm-dd): 2022-09-08
+--------------------------------------
+'''
 
 # ----- Operaciones algebraicas
 

@@ -6,23 +6,16 @@
   Render.py (Object)
   - Object used to render a bmp image
 
-  Last modified (yy-mm-dd): 2022-08-08
+  Last modified (yy-mm-dd): 2022-09-08
 --------------------------------------
 '''
-
-# TODO: quitar
-
-from numpy import *
-
-# TODO: quitar
-
 
 from math import cos, sin
 from .Texture import Texture
 from .util import *
 from .Obj import Obj
-from .Vector import *
-from .Matrix import *
+from .MStructs.Vector import *
+from .MStructs.Matrix import *
 
 class Render(object):
   '''

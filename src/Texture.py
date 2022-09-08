@@ -1,4 +1,15 @@
+''' 
+--------------------------------------
+  Universidad del Valle de Guatemala
+  Author: Diego Cordova - 20212
 
+  Texture.py (Object)
+  - Object used to load textures to
+    a model
+
+  Last modified (yy-mm-dd): 2022-08-08
+--------------------------------------
+'''
 
 from .util import *
 import struct
