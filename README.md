@@ -2,6 +2,7 @@
 
 ## 📡 Tecnologias Utilizadas
 - Python 🐍: Modern syntax, Interpreted Languaje
+  > Python 10.0 or higher needed
 
 ## ✅ Rúbrica:
 
