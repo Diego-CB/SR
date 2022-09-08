@@ -10,10 +10,19 @@
 --------------------------------------
 '''
 
+# TODO: quitar
+
+from numpy import *
+
+# TODO: quitar
+
+
+from math import cos, sin
 from .Texture import Texture
 from .util import *
 from .Obj import Obj
 from .Vector import *
+from .Matrix import *
 
 class Render(object):
   '''
@@ -33,7 +42,126 @@ class Render(object):
     self.current_color = color(1, 1, 1)
     self.clear_color = color(0, 0, 0)
     self.texture = None
+    self.Model = None
 
+  # Matrix transformaions
+
+  def __transform_vertex(self, vertex):
+    '''Returns the coordinates of a vertex centered to the screen'''
+    augmented_vertex = V4([*vertex, 1])
+
+    transformed_vertex = (
+      self.viewport
+      @ self.projection
+      @ self.Model
+      @ augmented_vertex
+      @ self.viewMatrix
+    )
+    
+    transformed_vertex = transformed_vertex.matrix[0]
+
+    return V3(
+      transformed_vertex[0] / transformed_vertex[3],
+      transformed_vertex[1] / transformed_vertex[3],
+      transformed_vertex[2] / transformed_vertex[3]
+    )
+
+  def loadModelMatrix(self, translate, scale, rotate):
+    translate=V3(*translate)
+    scale=V3(*scale)
+    rotate=V3(*rotate)
+
+    translation_matrix = M4([
+      [1, 0, 0, translate.x],
+      [0, 1, 0, translate.y],
+      [0, 0, 1, translate.z],
+      [0, 0, 0, 1],
+    ])
+
+    scale_matrix = M4([
+      [scale.x, 0, 0, 0],
+      [0, scale.y, 0, 0],
+      [0, 0, scale.z, 0],
+      [0, 0, 0, 1],
+    ])
+
+    a = rotate.x
+    rotation_x = M4([
+      [1,      0,       0, 0],
+      [0, cos(a), -sin(a), 0],
+      [0, sin(a),  cos(a), 0],
+      [0,      0,       0, 1],
+    ])
+
+    a = rotate.y
+    rotation_y = M4([
+      [cos(a) , 0, sin(a), 0],
+      [0      ,      1, 0, 0],
+      [-sin(a), 0, cos(a), 0],
+      [0      ,      0, 0, 1],
+    ])
+
+    a = rotate.z
+    rotation_z = M4([
+      [cos(a), -sin(a), 0, 0],
+      [sin(a), cos(a) , 0, 0],
+      [0     , 0      , 1, 0],
+      [0     , 0      , 0, 1],
+    ])
+
+    rotation_matrix = rotation_x @ rotation_y @ rotation_z
+    self.Model = translation_matrix @ rotation_matrix @ scale_matrix
+
+  def loadViewMatrix(self, x:V3, y:V3, z:V3, center:V3):
+    # (x, y, z) = eye
+    Mi = M4([
+      [x.x, x.y, x.z, 0],
+      [y.x, y.y, y.z, 0],
+      [z.x, z.y, z.z, 0],
+      [0  ,   0,   0, 1],
+    ])
+
+    Op = M4([
+      [1, 0, 0, -center.x],
+      [0, 1, 0, -center.y],
+      [0, 0, 1, -center.z],
+      [0, 0, 0,         1],
+    ])
+
+    self.viewMatrix = Mi @ Op
+  
+  def loadProjectionMatrix(self, coeff):
+    # (x, y, z) = eye
+    c = coeff
+    self.projection = M4([
+      [1, 0, 0, 0],
+      [0, 1, 0, 0],
+      [0, 0, 1, 0],
+      [0, 0, c, 1]
+    ])
+  
+  def loadViewportMatrix(self):
+    x = 0
+    y = 0
+    w = self.window_w / 2
+    h = self.window_h / 2
+
+    self.viewport = M4([
+      [w, 0, 0, x + w],
+      [0, h, 0, y + h],
+      [0, 0, 128, 128],
+      [0, 0, 0, 1]
+    ])
+
+  def lookAt(self, eye: V3, center:V3, up:V3, coeff):
+    z = (eye - center).normalize()
+    x = (up @ z).normalize()
+    y = (z @ x).normalize()
+
+    self.loadProjectionMatrix(coeff)
+    self.loadViewMatrix(x, y, z, center)
+    self.loadViewportMatrix()
+    
   def initWindow(self, width, height):
     '''
       Initialize window and framebuffer 
@@ -52,6 +180,7 @@ class Render(object):
         for x in range(self.window_w)
     ]
 
+  # Functionality
   def initViewPort(self, width, height):
     '''
       Initialize viewport and
@@ -134,23 +263,19 @@ class Render(object):
 
       self.line(V3(x0, y0), V3(x1, y1))
 
-  def __transform_vertex(self, vertex, translate, scale, vertex_to_draw=(0, 1, 2)):
-    '''Returns the coordinates of a vertex centered to the screen'''
-    return V3(
-      round(vertex[vertex_to_draw[0]] * scale[0]) + translate[0],
-      round(vertex[vertex_to_draw[1]] * scale[1]) + translate[1],
-      round(vertex[vertex_to_draw[2]] * scale[2]) + translate[2]
-    )
-
   def load_model(
-    self, model_path, transform, 
-    scale, draw, L, vertex_to_draw,
+    self, model_path, 
+    draw, L,
+    translate=(0, 0, 0),
+    scale    =(1, 1, 1),
+    rotate   =(0, 0, 0),
     texture_path = None
   ):
+    self.loadModelMatrix(translate, scale, rotate)
+    model = Obj(model_path)
     ''' Reads an obj file and draws a wireframe of it in the viewport '''
 
     if texture_path: self.texture = Texture(texture_path)
-    model = Obj(model_path)
 
     for face in model.faces:
       face_vertex = []
@@ -158,7 +283,7 @@ class Render(object):
 
       for actual_v in face:
         temp = model.vertices[actual_v[0] - 1]
-        temp = self.__transform_vertex(temp, transform, scale, vertex_to_draw)
+        temp = self.__transform_vertex(temp)
         face_vertex.append(temp)
 
         if isinstance(self.texture, Texture):
@@ -253,7 +378,3 @@ class Render(object):
       else:
         textures = (text[0], text[v+1], text[v+2])
         self.triangle(vertex, L, textures)
-      
-
-    
-
