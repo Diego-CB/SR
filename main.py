@@ -6,30 +6,30 @@
   main.py
   - main program to write files
   
-  Last modified (yy-mm-dd): 2022-08-23
+  Last modified (yy-mm-dd): 2022-09-12
 --------------------------------------
 '''
 
 if __name__ == '__main__':
   from Drivers import *
   from time import sleep
-  Face()
-
-else:
+  
   def bye():
     print('Software Renderer ended succesfully!!\n')
 
   renders = {
     's': bye,
-    '1': Mario,
-    '2': Yoshi,
-    '3': Face
+    '1': Mario_medium,
+    '2': Mario_lowangle,
+    '3': Mario_highangle,
+    '4': Mario_dutch,
   }
   option_menu = ('\n' +
     'Seleccione un render:\n' +
-    '1. Render de Mario.obj\n' +
-    '2. Render de Yoshi.obj\n' +
-    '3. Render de Face.obj\n' +
+    '1. Medium Shot\n' +
+    '2. Low Angle\n' +
+    '3. High Angle\n' +
+    '4. Dutch Angle\n' +
     's. Salir\n' +
     ' -> '
   )

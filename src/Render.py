@@ -30,6 +30,12 @@ class Render(object):
     framebuffer: pixel framebuffer
     current_color: Selected color to print pixels
     clear_color: color to clear image
+
+    Matrixes:
+    - Model: Model transformation matrix
+    - viewMatrix
+    - projection: Perspective trandformations
+    - viewport: Viewport trandformations
   '''
   def __init__(self):
     self.current_color = color(1, 1, 1)
@@ -60,6 +66,10 @@ class Render(object):
     )
 
   def loadModelMatrix(self, translate, scale, rotate):
+    '''
+    Loads the Model matrix with the transformaitions
+    of the model
+    '''
     translate=V3(*translate)
     scale=V3(*scale)
     rotate=V3(*rotate)
@@ -106,6 +116,10 @@ class Render(object):
     self.Model = translation_matrix @ rotation_matrix @ scale_matrix
 
   def loadViewMatrix(self, x:V3, y:V3, z:V3, center:V3):
+    '''
+    Loads the viewMatrix with the transformaitions
+    of the camera view
+    '''
     # (x, y, z) = eye
     Mi = M4([
       [x.x, x.y, x.z, 0],
@@ -124,6 +138,10 @@ class Render(object):
     self.viewMatrix = Mi @ Op
   
   def loadProjectionMatrix(self, coeff):
+    '''
+    Loads the viewMatrix with the transformaitions
+    of the camera view
+    '''
     # (x, y, z) = eye
     c = coeff
     self.projection = M4([
@@ -134,6 +152,10 @@ class Render(object):
     ])
   
   def loadViewportMatrix(self):
+    '''
+    Loads the viewport matrix with 
+    the transformaitions of the viewpoer
+    '''
     x = 0
     y = 0
     w = self.window_w / 2
@@ -147,6 +169,10 @@ class Render(object):
     ])
 
   def lookAt(self, eye: V3, center:V3, up:V3, coeff):
+    '''
+    Takes the information of the eye, center, up and coeff
+    to then load the projection, viewport an view matrixes
+    '''
     z = (eye - center).normalize()
     x = (up @ z).normalize()
     y = (z @ x).normalize()
@@ -155,6 +181,7 @@ class Render(object):
     self.loadViewMatrix(x, y, z, center)
     self.loadViewportMatrix()
     
+  # Functionality
   def initWindow(self, width, height):
     '''
       Initialize window and framebuffer 
@@ -173,7 +200,6 @@ class Render(object):
         for x in range(self.window_w)
     ]
 
-  # Functionality
   def initViewPort(self, width, height):
     '''
       Initialize viewport and
@@ -239,26 +265,9 @@ class Render(object):
         round_limit += 2 * dx
 
   # ---------- Drawing of models
-  
-  def draw_perim_fig(self, p:list[V3]):
-    for n in range(0, len(p)):
-      x0 = p[n].x
-      y0 = p[n].y
-      x1, y1 = 0, 0
-
-      if n < len(p) - 1:
-        x1 = p[n+1].x
-        y1 = p[n+1].y
-
-      else:
-        x1 = p[0].x
-        y1 = p[0].y
-
-      self.line(V3(x0, y0), V3(x1, y1))
 
   def load_model(
-    self, model_path, 
-    draw, L,
+    self, model_path, L,
     translate=(0, 0, 0),
     scale    =(1, 1, 1),
     rotate   =(0, 0, 0),
@@ -266,7 +275,6 @@ class Render(object):
   ):
     self.loadModelMatrix(translate, scale, rotate)
     model = Obj(model_path)
-    ''' Reads an obj file and draws a wireframe of it in the viewport '''
 
     if texture_path: self.texture = Texture(texture_path)
 
@@ -279,14 +287,11 @@ class Render(object):
         temp = self.__transform_vertex(temp)
         face_vertex.append(temp)
 
-        if isinstance(self.texture, Texture):
+        if self.texture:
           temp_texture = V3(*model.tverctices[actual_v[1] - 1])
           text_vertex.append(temp_texture)
 
-      if draw:
-        self.draw_perim_fig(face_vertex)
-      else:
-        self.poly_triangle(face_vertex, text_vertex, L)
+      self.poly_triangle(face_vertex, text_vertex, L)
 
   # Triangles
 

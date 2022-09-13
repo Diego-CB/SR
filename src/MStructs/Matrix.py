@@ -8,52 +8,16 @@
     matrix and algebraic operations
     between them.
   
-  Last modified (yy-mm-dd): 2022-09-08
+  Last modified (yy-mm-dd): 2022-09-12
 --------------------------------------
 '''
 
-# ----- Operaciones algebraicas
-
-def transpos(M):
-  matrix = []
-
-  for n in M.matrix:
-    matrix.append(n[0])
-
-  return M4([ matrix ])
-
-def matrixMul(M1, M2):
-  M1, M2 = M1.matrix, M2.matrix
-  n1 = len(M1[0])
-  n2 = len(M2)
-
-  if n1 != n2:
-    raise Exception('Invalid Sizes of matrixes', n1, n2)
-
-  m = len(M1)
-  n = len(M2[0])
-  resultMatrix = []
-
-  for i in range(m):
-    temp_array:list = []
-
-    for j in range(n):
-      temp_value = 0
-
-      for k in range(n1):
-        a = M1[i][k]
-        b = M2[k][j]
-        temp_value += a * b
-
-      temp_array.append(temp_value)
-    
-    resultMatrix.append(temp_array)
-  
-  return M4(resultMatrix)
+from functools import reduce
 
 # ----- Objetos
 
 class V4:
+  '''Vector 4D'''
   def __init__(self, array:list):
     self.matrix = array
   
@@ -61,6 +25,7 @@ class V4:
     return f'V4:\n{self.matrix}\n'
 
   def __matmul__(self, other):
+    '''Multiplication with 4x4 matrix'''
     if type(other) == M4:
       return matrixMul(
         M4([[ x for x in self.matrix ]]),
@@ -68,6 +33,7 @@ class V4:
       )
 
 class M4:
+  '''4x4 Matrix'''
   def __init__(self, array:list):
     self.matrix = array
   
@@ -75,9 +41,11 @@ class M4:
     return f'M4:\n{self.matrix}\n'\
     
   def __matmul__(self, other):
+    '''Multiplication of matrixes'''
     if type(other) == M4:
       return matrixMul(self, other)
     
+    '''Multiplication with 4D vector'''
     if type(other) == V4:
       return transpos(
         matrixMul(
@@ -85,3 +53,28 @@ class M4:
           M4([ [x] for x in other.matrix ])
         )
       )
+
+# ----- Operaciones de Algebra Lineal
+
+def transpos(M:M4) -> M4:
+  '''Returns the transposed matrix of M'''
+  return M4([[ x[0] for x in M.matrix ]])
+
+def matrixMul(M1:M4, M2:M4) -> M4:
+  '''Returns the multiplication between M1 and M2'''
+  M1, M2 = M1.matrix, M2.matrix
+  n1 = len(M1[0])
+  n2 = len(M2)
+
+  if n1 != n2: raise Exception('Invalid Sizes of matrixes', n1, n2)
+  m = len(M1)
+  n = len(M2[0])
+
+  return M4 ([
+    [
+      reduce(
+        lambda last, next: last + next, 
+        [M1[i][k] * M2[k][j] for k in range(n1)]
+      ) for j in range(n)
+    ] for i in range(m)
+  ])

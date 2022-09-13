@@ -16,11 +16,10 @@
     - [x] Viewport
 
   - Photoshoot! Deben renderizar 4 tomas de su modelo:
-    - [ ] Medium shot
-    - [ ] Low angle
-    - [ ] High angle
-    - [ ] Dutch angle
-
+    - [x] Medium shot
+    - [x] Low angle
+    - [x] High angle
+    - [x] Dutch angle
 
 ## 🗃️ Estructura de Archivos
 

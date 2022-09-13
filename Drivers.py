@@ -7,7 +7,7 @@
   - Have the instructions to render 
     models using gl.py functions
   
-  Last modified (yy-mm-dd): 2022-08-17 
+  Last modified (yy-mm-dd): 2022-09-12 
 --------------------------------------
 '''
 
@@ -28,7 +28,7 @@ def __paintModel(
   model, texture, W, 
   transform, scale, rotate, 
   eye, center, up, coeff,
-  L
+  L, filename
 ):
   print('\nRenderizando:', model, '\nCon texturas:', texture)
   __Init(W)
@@ -44,58 +44,9 @@ def __paintModel(
   )
 
   # File Writing
-  glFinish('./renders/' + model.split('/')[-1].split('.')[0])
+  glFinish(filename)
 
 # ------ Modelos ------
-
-def Mario():
-  model = './models/Mario/Mario.obj'
-  texture = './models/Mario/Mario.bmp'
-  LIGHT = (-15, 10, -100)
-  W = 1024
-
-  transform = (
-    round(W / 2),
-    round(W / 2),
-    0
-  )
-  scale = (
-    round(W / 6),
-    round(W / 6), 
-    round(W / 6), 
-  )
-  rotate = (
-    0,
-    pi * 2/3,
-    pi * 2/3
-  )
-
-  __paintModel(
-    model, texture, W, transform, scale, rotate, LIGHT
-  )
-
-def Yoshi():
-  model = './models/Yoshi/Yoshi.obj'
-  texture = './models/Yoshi/Yoshi.bmp'
-  v_to_draw = (2, 0, 1) # z, x, y
-  LIGHT = (0, 0, -100)
-  W = 1024
-
-  transform = (
-    round(W),
-    round(W / 2),
-    round(W * 2)
-  )
-  scale = (
-    round(W / 2.8),
-    round(W / 2.8), 
-    round(W / 4)
-  )
-
-  __paintModel(
-    model, texture, W, transform, 
-    scale, v_to_draw, LIGHT
-  )
 
 def Face():
   model = './models/Face/face.obj'
@@ -128,3 +79,164 @@ def Face():
     model, texture, W, transform, scale, rotate, 
     eye, center, up, coeff, LIGHT
   )
+
+def Mario_normal():
+  model = './models/Mario/Mario.obj'
+  texture = './models/Mario/Mario.bmp'
+  LIGHT = (0, 0, -1)
+  W = 1000
+
+  transform = (
+    0,
+    0,
+    0
+  )
+  scale = (
+    0.7,
+    0.7, 
+    0.7,
+  )
+  rotate = (
+    pi/2,
+    pi,
+    0,
+  )
+
+  eye = (0, 0, 5)
+  center = (0, 0, 0)
+  up = (0, 1, 0)
+  coeff = -0.01
+
+  __paintModel(
+    model, texture, W, transform, scale, rotate, 
+    eye, center, up, coeff, LIGHT, 'mario_medium'
+  )
+
+def Mario_medium():
+  model = './models/Mario/Mario.obj'
+  texture = './models/Mario/Mario.bmp'
+  LIGHT = (0, 0, -1)
+  W = 1000
+
+  transform = (
+    0,
+    -0.5,
+    0
+  )
+  scale = (
+    0.76,
+    0.76, 
+    0.76,
+  )
+  rotate = (
+    pi/2,
+    pi,
+    0,
+  )
+
+  eye = (0, 0, 5)
+  center = (0, 0, 0)
+  up = (0, 1, 0)
+  coeff = -0.0001
+
+  __paintModel(
+    model, texture, W, transform, scale, rotate, 
+    eye, center, up, coeff, LIGHT, './Renders/mario_medium'
+  )
+
+def Mario_lowangle():
+  model = './models/Mario/Mario.obj'
+  texture = './models/Mario/Mario.bmp'
+  LIGHT = (0, -0.3, -0.7)
+  W = 1000
+
+  transform = (
+    0,
+    0,
+    -0.5
+  )
+  scale = (
+    0.8,
+    0.8,
+    0.88
+  )
+  rotate = (
+    pi * 0.98/2,
+    pi,
+    pi * 1/30
+  )
+
+  eye = (0, 65, 35)
+  center = (0, 0, 0)
+  up = (0, 1, 0)
+  coeff = 0.3
+
+  __paintModel(
+    model, texture, W, transform, scale, rotate, 
+    eye, center, up, coeff, LIGHT, './Renders/Mario_low'
+  )
+
+def Mario_highangle():
+  model = './models/Mario/Mario.obj'
+  texture = './models/Mario/Mario.bmp'
+  LIGHT = (0, 0, -1)
+  W = 600
+
+  transform = (
+    0,
+    1,
+    -1.2
+  )
+  scale = (
+    0.75,
+    0.75, 
+    0.80
+  )
+  rotate = (
+    pi * 1/2,
+    pi * 86/85,
+    pi * 1/10
+  )
+
+  eye = (0, -200, 80)
+  center = (0, 0, 0)
+  up = (0, 1, 0)
+  coeff = 0.2
+
+  __paintModel(
+    model, texture, W, transform, scale, rotate, 
+    eye, center, up, coeff, LIGHT, './Renders/mario_high'
+  )
+
+def Mario_dutch():
+  model = './models/Mario/Mario.obj'
+  texture = './models/Mario/Mario.bmp'
+  LIGHT = (0, 0, -1)
+  W = 1000
+
+  transform = (
+    -0.25,
+    0,
+    -2.5
+  )
+  scale = (
+    0.7,
+    0.7, 
+    0.7
+  )
+  rotate = (
+    pi * 1/2,
+    pi,
+    -pi * 0.75/2
+  )
+
+  eye = (0, 30, 70)
+  center = (0, 0, 0)
+  up = (30, 70, 0)
+  coeff = 0.15
+
+  __paintModel(
+    model, texture, W, transform, scale, rotate, 
+    eye, center, up, coeff, LIGHT, './Renders/Mario_dutch'
+  )
+
