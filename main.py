@@ -12,35 +12,25 @@
 
 if __name__ == '__main__':
   from Drivers import *
-  from time import sleep
-  
-  def bye():
-    print('Software Renderer ended succesfully!!\n')
 
-  renders = {
-    's': bye,
-    '1': Mario_medium,
-    '2': Mario_lowangle,
-    '3': Mario_highangle,
-    '4': Mario_dutch,
-  }
-  option_menu = ('\n' +
-    'Seleccione un render:\n' +
-    '1. Medium Shot\n' +
-    '2. Low Angle\n' +
-    '3. High Angle\n' +
-    '4. Dutch Angle\n' +
-    's. Salir\n' +
-    ' -> '
+  print('\n----- Initializing moon Rendering with shaders -----')
+  model = './models/Face/face.obj'
+  texture = './models/Face/model.bmp'
+  LIGHT = (0, 0, -1)
+  W = 800
+  SIZE = 1
+
+  transform = (0, 0, 0)
+  scale = (SIZE, SIZE, SIZE)
+  rotate = (0, pi * 1/5, 0)
+
+  eye = (0, 0, 5)
+  center = (0, 0, 0)
+  up = (0, 1, 0)
+  coeff = -0.0001
+
+  paintModel(
+    model, texture, W, transform, scale, rotate, 
+    eye, center, up, coeff, LIGHT, 'Renders/Moon'
   )
-  
-  option = None
-  while option != 's':
-    option = input(option_menu)
 
-    try:
-      renders[option]()
-      sleep(1)
-
-    except KeyError:
-      print('Error: Seleccione una opcion valida')

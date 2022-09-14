@@ -24,7 +24,7 @@ def __Init(size):
   glCreateViewPort(x, y)
 
 
-def __paintModel(
+def paintModel(
   model, texture, W, 
   transform, scale, rotate, 
   eye, center, up, coeff,
@@ -75,7 +75,7 @@ def Face():
   up = (0, 1, 0)
   coeff = -0.001
 
-  __paintModel(
+  paintModel(
     model, texture, W, transform, scale, rotate, 
     eye, center, up, coeff, LIGHT
   )
@@ -107,7 +107,7 @@ def Mario_normal():
   up = (0, 1, 0)
   coeff = -0.01
 
-  __paintModel(
+  paintModel(
     model, texture, W, transform, scale, rotate, 
     eye, center, up, coeff, LIGHT, 'mario_medium'
   )
@@ -139,7 +139,7 @@ def Mario_medium():
   up = (0, 1, 0)
   coeff = -0.0001
 
-  __paintModel(
+  paintModel(
     model, texture, W, transform, scale, rotate, 
     eye, center, up, coeff, LIGHT, './Renders/mario_medium'
   )
@@ -171,7 +171,7 @@ def Mario_lowangle():
   up = (0, 1, 0)
   coeff = 0.3
 
-  __paintModel(
+  paintModel(
     model, texture, W, transform, scale, rotate, 
     eye, center, up, coeff, LIGHT, './Renders/Mario_low'
   )
@@ -203,7 +203,7 @@ def Mario_highangle():
   up = (0, 1, 0)
   coeff = 0.2
 
-  __paintModel(
+  paintModel(
     model, texture, W, transform, scale, rotate, 
     eye, center, up, coeff, LIGHT, './Renders/mario_high'
   )
@@ -235,7 +235,7 @@ def Mario_dutch():
   up = (30, 70, 0)
   coeff = 0.15
 
-  __paintModel(
+  paintModel(
     model, texture, W, transform, scale, rotate, 
     eye, center, up, coeff, LIGHT, './Renders/Mario_dutch'
   )

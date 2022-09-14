@@ -27,6 +27,7 @@ class Obj(object):
     self.vertices = []
     self.faces = []
     self.tverctices = []
+    self.n_vertices = []
 
     for line in self.lines:
       try:
@@ -42,6 +43,14 @@ class Obj(object):
             ))
           ]
           self.vertices.append(temp_vertices)
+        
+        case 'vn':
+          temp_vertices = [
+            float(n) for n in list(filter(
+              lambda v: v != '', value.split(' ')
+            ))
+          ]
+          self.n_vertices.append(temp_vertices)
         
         case 'f':
           temp_faces = [

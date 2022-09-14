@@ -42,6 +42,7 @@ class Render(object):
     self.clear_color = color(0, 0, 0)
     self.texture = None
     self.Model = None
+    self.current_shader = None
 
   # Matrix transformaions
 
@@ -274,24 +275,26 @@ class Render(object):
     texture_path = None
   ):
     self.loadModelMatrix(translate, scale, rotate)
-    model = Obj(model_path)
+    model:Obj = Obj(model_path)
 
     if texture_path: self.texture = Texture(texture_path)
 
     for face in model.faces:
       face_vertex = []
       text_vertex = []
+      normal_vertex = []
 
       for actual_v in face:
         temp = model.vertices[actual_v[0] - 1]
         temp = self.__transform_vertex(temp)
         face_vertex.append(temp)
+        normal_vertex.append(V3(*model.n_vertices[actual_v[0] - 1]))
 
         if self.texture:
           temp_texture = V3(*model.tverctices[actual_v[1] - 1])
           text_vertex.append(temp_texture)
 
-      self.poly_triangle(face_vertex, text_vertex, L)
+      self.poly_triangle(face_vertex, text_vertex, normal_vertex, L)
 
   # Triangles
 
@@ -322,28 +325,10 @@ class Render(object):
     return w, v, u
     
   def triangle(
-    self, vertices:list[V3], L:tuple, t_vertices:list[V3] = (),
-    paint_color = [255, 255, 255]
+    self, vertices:list[V3], normals:list[V3],
+    L:tuple, t_vertices:list[V3] = ()
   ):
     A, B, C = vertices
-    L = V3(*L)
-    N = (C - A) @ (B - A)
-    i = L.normalize() * N.normalize()
-    i = round(i, 6)
-
-    if i < 0: return
-
-    if self.texture:
-      tA, tB, tC = t_vertices
-
-    else:
-      self.current_color = color(
-        round(paint_color[0] * i),
-        round(paint_color[1] * i),
-        round(paint_color[2] * i),
-        normalized=False
-      )
-
     Min, Max = self.bounding_box(A, B, C)
 
     for x in range(Min.x, Max.x + 1):
@@ -353,26 +338,34 @@ class Render(object):
 
         w, v, u = self.barycentric(A, B, C, V3(x, y))
         if w < 0 or v < 0 or u < 0: continue
+
         z = A.z * w + B.z * v + C.z * u
+        if self.zBuffer[y][x] > z: continue
+        self.zBuffer[y][x] = z
 
-        if self.zBuffer[y][x] < z:
-          self.zBuffer[y][x] = z
-
-          if self.texture:
-            tx = tA.x * w + tB.x * u + tC.x * v
-            ty = tA.y * w + tB.y * u + tC.y * v
-            self.current_color = self.texture.get_color(tx, ty, i)
+        if self.current_shader:
+          self.current_color = self.current_shader(
+            self,
+            normals=normals,
+            texture_coords = t_vertices,
+            bari = (w, u, v),
+            light = V3(*L)
+          )
             
-          self.point(x, y)
+        self.point(x, y)
 
-  def poly_triangle(self, face:list[V3], text:list[V3], L:tuple):
+  def poly_triangle(
+    self, face:list[V3], text:list[V3],
+    normals:list[V3], L:tuple
+  ):
     if len(face) < 3: raise Exception('Invalid Polygon:', face)
 
     for v in range(len(face) - 2):
       vertex = (face[0], face[v+1], face[v+2])
+      t_normals = (normals[0], normals[v+1], normals[v+2])
 
       if not self.texture:
-        self.triangle(vertex, L)
+        self.triangle(vertex, t_normals, L)
       else:
         textures = (text[0], text[v+1], text[v+2])
-        self.triangle(vertex, L, textures)
+        self.triangle(vertex, t_normals, L, textures)

@@ -16,11 +16,13 @@ from .util import color as color_b
 from .MStructs.Vector import V3
 from .IO_bmp import *
 from .Texture import Texture
+from .Shaders import *
 
 def glInit():
   ''' Initialized Internal Render Object '''
   global SR
   SR = Render()
+  SR.current_shader = shader
 
 def sr_isInit():
   '''
