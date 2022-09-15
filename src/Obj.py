@@ -37,34 +37,32 @@ class Obj(object):
 
       match prefix:
         case 'v':
-          temp_vertices = [
+          self.vertices.append([
             float(n) for n in list(filter(
               lambda v: v != '', value.split(' ')
             ))
-          ]
-          self.vertices.append(temp_vertices)
+          ])
         
         case 'vn':
-          temp_vertices = [
+          self.n_vertices.append([
             float(n) for n in list(filter(
               lambda v: v != '', value.split(' ')
             ))
-          ]
-          self.n_vertices.append(temp_vertices)
+          ])
         
         case 'f':
-          temp_faces = [
+          self.faces.append([
             [int(n) for n in face.split('/')]
               for face in list(filter(
               lambda v: v != '', value.split(' ')
             ))
-          ]
-          self.faces.append(temp_faces)
+          ])
 
         case 'vt':
-          temp_vertices = [
+          self.tverctices.append([
             float(n) for n in list(filter(
               lambda v: v != '', value.split(' ')
             ))
-          ]
-          self.tverctices.append(temp_vertices)
+          ])
+
+    if len(self.n_vertices) == 0: self.n_vertices = self.vertices

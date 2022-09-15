@@ -322,7 +322,7 @@ class Render(object):
     u = cx / cz
     w = 1 - (cx + cy) / cz
     
-    return w, v, u
+    return w, u, v
     
   def triangle(
     self, vertices:list[V3], normals:list[V3],
@@ -336,10 +336,10 @@ class Render(object):
         if x > len(self.zBuffer[0]) - 1 or y > len(self.zBuffer) - 1: continue
         if x < 0 or y < 0: continue
 
-        w, v, u = self.barycentric(A, B, C, V3(x, y))
+        w, u, v = self.barycentric(A, B, C, V3(x, y))
         if w < 0 or v < 0 or u < 0: continue
 
-        z = A.z * w + B.z * v + C.z * u
+        z = A.z * w + B.z * u + C.z * v
         if self.zBuffer[y][x] > z: continue
         self.zBuffer[y][x] = z
 

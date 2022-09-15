@@ -16,13 +16,13 @@ from .util import color as color_b
 from .MStructs.Vector import V3
 from .IO_bmp import *
 from .Texture import Texture
-from .Shaders import *
+from .Shaders import gouraud
 
 def glInit():
   ''' Initialized Internal Render Object '''
   global SR
   SR = Render()
-  SR.current_shader = shader
+  SR.current_shader = gouraud
 
 def sr_isInit():
   '''

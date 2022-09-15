@@ -1,21 +1,28 @@
 from .util import color
 from .Render import Render
 
-def shader(render:Render, **kwargs):
+def gouraud(render:Render, **kwargs):
   w, u, v = kwargs['bari']
-  L = kwargs['light']
-  tA, tB, tC = kwargs['texture_coords']
+  L = kwargs['light'].normalize()  
   nA, nB, nC = kwargs['normals']
+  
+  iA = nA.normalize() * L
+  iB = nB.normalize() * L
+  iC = nC.normalize() * L
+  i = abs(iA * w + iB * u + iC * v)
+  
+  try:
+    tA, tB, tC = kwargs['texture_coords']
+    if render.texture:
+      tx = tA.x * w + tB.x * u + tC.x * v
+      ty = tA.y * w + tB.y * u + tC.y * v
 
-  iA = nA.normalize() * L.normalize()
-  iB = nB.normalize() * L.normalize()
-  iC = nC.normalize() * L.normalize()
-  i = iA * w + iB * u + iC * v
-  i = iA
-  if i < 0: return color(1, 0, 0)
+      return render.texture.get_color(tx, ty, i)
 
-  if render.texture:
-    tx = tA.x * w + tB.x * u + tC.x * v
-    ty = tA.y * w + tB.y * u + tC.y * v
-
-    return render.texture.get_color(tx, ty, i)
+  except:
+    return color(
+      round(255 * i),
+      round(255 * i),
+      round(255 * i),
+      normalized=False
+    )

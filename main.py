@@ -12,25 +12,20 @@
 
 if __name__ == '__main__':
   from Drivers import *
-
   print('\n----- Initializing moon Rendering with shaders -----')
-  model = './models/Face/face.obj'
-  texture = './models/Face/model.bmp'
-  LIGHT = (0, 0, -1)
-  W = 800
-  SIZE = 1
+  
+  LIGHT = (-50, 0, -50)
+  W = 400
+  SIZE = 0.9
 
-  transform = (0, 0, 0)
+  transform = center = rotate = (0, 0, 0)
   scale = (SIZE, SIZE, SIZE)
-  rotate = (0, pi * 1/5, 0)
-
   eye = (0, 0, 5)
-  center = (0, 0, 0)
   up = (0, 1, 0)
-  coeff = -0.0001
+  coeff = -0.01
 
   paintModel(
-    model, texture, W, transform, scale, rotate, 
-    eye, center, up, coeff, LIGHT, 'Renders/Moon'
+    './models/Shpere/sphere.OBJ', None, W, transform, scale, 
+    rotate, eye, center, up, coeff, LIGHT, 'Renders/Moon'
   )
 

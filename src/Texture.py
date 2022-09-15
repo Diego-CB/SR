@@ -50,8 +50,8 @@ class Texture:
     p = self.pixels[y][x]
 
     return color(
-      r = round(p[2] * intensity),
-      g = round(p[1] * intensity),
-      b = round(p[0] * intensity),
+      r = max(round(p[2] * intensity), 0),
+      g = max(round(p[1] * intensity), 0),
+      b = max(round(p[0] * intensity), 0),
       normalized=False
     )
