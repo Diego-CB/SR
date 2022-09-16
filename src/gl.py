@@ -18,11 +18,11 @@ from .IO_bmp import *
 from .Texture import Texture
 from .Shaders import gouraud
 
-def glInit():
+def glInit(shader=gouraud):
   ''' Initialized Internal Render Object '''
   global SR
   SR = Render()
-  SR.current_shader = gouraud
+  SR.current_shader = shader
 
 def sr_isInit():
   '''

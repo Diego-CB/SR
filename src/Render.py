@@ -349,7 +349,8 @@ class Render(object):
             normals=normals,
             texture_coords = t_vertices,
             bari = (w, u, v),
-            light = V3(*L)
+            light = V3(*L),
+            coords = (x, y)
           )
             
         self.point(x, y)

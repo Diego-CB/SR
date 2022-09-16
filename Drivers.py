@@ -13,10 +13,11 @@
 
 from cmath import pi
 from src.gl import *
+from src.Shaders import *
 
-def __Init(size):
+def __Init(size, shader):
   # Initalization
-  glInit()
+  glInit(shader)
   x, y = size if type(size) in [tuple, list] else size, size
 
   # Viewport and window initialization
@@ -28,10 +29,10 @@ def paintModel(
   model, texture, W, 
   transform, scale, rotate, 
   eye, center, up, coeff,
-  L, filename
+  L, filename, shader=gouraud
 ):
   print('\nRenderizando:', model, '\nCon texturas:', texture)
-  __Init(W)
+  __Init(W, shader)
   lookAt(eye, center, up, coeff)
 
   load_model(
