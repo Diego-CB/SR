@@ -7,7 +7,7 @@
   - Have the instructions to render 
     models using gl.py functions
   
-  Last modified (yy-mm-dd): 2022-09-16
+  Last modified (yy-mm-dd): 2022-09-17
 --------------------------------------
 '''
 
@@ -16,14 +16,9 @@ from src.gl import *
 from src.Shaders import *
 
 def __Init(size, shader):
-  # Initalization
   glInit(shader)
   x, y = size if type(size) in [tuple, list] else size, size
-
-  # Viewport and window initialization
-  glCreateWindow  (x, y)
-  glCreateViewPort(x, y)
-
+  glCreateWindow (x, y) # Viewport and window initialization
 
 def paintModel(
   model, texture, W, 

@@ -56,10 +56,8 @@ class Render(object):
       @ self.Model
       @ augmented_vertex
       @ self.viewMatrix
-    )
+    ).matrix[0]
     
-    transformed_vertex = transformed_vertex.matrix[0]
-
     return V3(
       transformed_vertex[0] / transformed_vertex[3],
       transformed_vertex[1] / transformed_vertex[3],
@@ -183,6 +181,7 @@ class Render(object):
     self.loadViewportMatrix()
     
   # Functionality
+  
   def initWindow(self, width, height):
     '''
       Initialize window and framebuffer 
@@ -201,18 +200,8 @@ class Render(object):
         for x in range(self.window_w)
     ]
 
-  def initViewPort(self, width, height):
-    '''
-      Initialize viewport and
-      calculate x and y offsets
-    '''
-
-    self.viewPort_w = width
-    self.viewPort_h = height
-
   def clear(self):
     ''' Fills framebuffer with the actual clear_color'''
-
     self.framebuffer = [
       [self.clear_color for x in range(self.window_w)]
       for y in range(self.window_h)

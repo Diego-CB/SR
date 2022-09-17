@@ -42,11 +42,6 @@ def glCreateWindow(width: int, height: int):
   sr_isInit()
   SR.initWindow(width=width, height=height)
 
-def glCreateViewPort(width: int, height: int):
-  ''' Initialize viewport of image '''
-  sr_isInit()
-  SR.initViewPort(width=width, height=height)
-
 def glClear():
   ''' Fills image with one plain color (clear_color)'''
   sr_isInit()
