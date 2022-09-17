@@ -39,6 +39,7 @@
       * Contiene **M4** (Objeto interno que representa una matriz en 4D).
 
 - **`Renders`**: Dentro de esta carpeta se encuentran las imagenes resultantes de las renderizaciones realizadas.
+  - `template.png`: Imagen de referencia para el shader del planeta Jupiter.
 
 - `Drivers.py`: Funciones de renderizado de modelos.
 - `main.py`: Programa principal.
