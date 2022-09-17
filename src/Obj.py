@@ -6,7 +6,7 @@
   Obj.py (Object)
   - Object used to read .obj models
 
-  Last modified (yy-mm-dd): 2022-07-31
+  Last modified (yy-mm-dd): 2022-09-17
 --------------------------------------
 '''
 
@@ -27,6 +27,7 @@ class Obj(object):
     self.vertices = []
     self.faces = []
     self.tverctices = []
+    self.n_vertices = []
 
     for line in self.lines:
       try:
@@ -36,26 +37,30 @@ class Obj(object):
 
       match prefix:
         case 'v':
-          temp_vertices = [
+          self.vertices.append([
             float(n) for n in list(filter(
               lambda v: v != '', value.split(' ')
             ))
-          ]
-          self.vertices.append(temp_vertices)
+          ])
+        
+        case 'vn':
+          self.n_vertices.append([
+            float(n) for n in list(filter(
+              lambda v: v != '', value.split(' ')
+            ))
+          ])
         
         case 'f':
-          temp_faces = [
+          self.faces.append([
             [int(n) for n in face.split('/')]
               for face in list(filter(
               lambda v: v != '', value.split(' ')
             ))
-          ]
-          self.faces.append(temp_faces)
+          ])
 
         case 'vt':
-          temp_vertices = [
+          self.tverctices.append([
             float(n) for n in list(filter(
               lambda v: v != '', value.split(' ')
             ))
-          ]
-          self.tverctices.append(temp_vertices)
+          ])

@@ -74,7 +74,7 @@ def matrixMul(M1:M4, M2:M4) -> M4:
     [
       reduce(
         lambda last, next: last + next, 
-        [M1[i][k] * M2[k][j] for k in range(n1)]
+        [ M1[i][k] * M2[k][j] for k in range(n1) ]
       ) for j in range(n)
     ] for i in range(m)
   ])

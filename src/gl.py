@@ -16,11 +16,13 @@ from .util import color as color_b
 from .MStructs.Vector import V3
 from .IO_bmp import *
 from .Texture import Texture
+from .Shaders import gouraud
 
-def glInit():
+def glInit(shader=gouraud):
   ''' Initialized Internal Render Object '''
   global SR
   SR = Render()
+  SR.current_shader = shader
 
 def sr_isInit():
   '''
@@ -39,11 +41,6 @@ def glCreateWindow(width: int, height: int):
   ''' Initialize Window of image '''
   sr_isInit()
   SR.initWindow(width=width, height=height)
-
-def glCreateViewPort(width: int, height: int):
-  ''' Initialize viewport of image '''
-  sr_isInit()
-  SR.initViewPort(width=width, height=height)
 
 def glClear():
   ''' Fills image with one plain color (clear_color)'''

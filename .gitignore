@@ -1,4 +1,4 @@
 __pycache__
 Renders/*.bmp
 *.ipynb
-*.png
+models/*.png

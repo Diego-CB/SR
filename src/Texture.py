@@ -7,7 +7,7 @@
   - Object used to load textures to
     a model
 
-  Last modified (yy-mm-dd): 2022-08-08
+  Last modified (yy-mm-dd): 2022-08-17
 --------------------------------------
 '''
 
@@ -50,8 +50,8 @@ class Texture:
     p = self.pixels[y][x]
 
     return color(
-      r = round(p[2] * intensity),
-      g = round(p[1] * intensity),
-      b = round(p[0] * intensity),
+      r = max(min(round(p[2] * intensity), 255), 0),
+      g = max(min(round(p[1] * intensity), 255), 0),
+      b = max(min(round(p[0] * intensity), 255), 0),
       normalized=False
     )
