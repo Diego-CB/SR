@@ -31,10 +31,13 @@ def paintModel(
   eye, center, up, coeff,
   L, filename, shader=gouraud
 ):
-  print('\nRenderizando:', model, '\nCon texturas:', texture)
-  __Init(W, shader)
-  lookAt(eye, center, up, coeff)
+  print('\nRenderizando:', model)
+  if texture is not None: print('Con texturas:', texture)
 
+  __Init(W, shader)
+  glCLearColor(1, 1, 1)
+  glClear()
+  lookAt(eye, center, up, coeff)
   load_model(
     model, 
     L,

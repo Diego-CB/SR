@@ -350,7 +350,8 @@ class Render(object):
             texture_coords = t_vertices,
             bari = (w, u, v),
             light = V3(*L),
-            coords = (x, y)
+            coords = (x, y),
+            size = (self.window_w, self.window_h)
           )
             
         self.point(x, y)

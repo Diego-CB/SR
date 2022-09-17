@@ -13,10 +13,10 @@
 if __name__ == '__main__':
   from Drivers import *
   from src.Shaders import *
-  print('\n----- Initializing moon Rendering with shaders -----')
+  print('\n----- Initializing Jupiter Rendering with shaders -----')
   
-  LIGHT = (-11, -11, -78)
-  W = 200
+  LIGHT = (20, -10, -50)
+  W = 800
   SIZE = 0.9
 
   transform = center = rotate = (0, 0, 0)
@@ -27,6 +27,6 @@ if __name__ == '__main__':
 
   paintModel(
     './models/Shpere/sphere.OBJ', None, W, transform, scale, 
-    rotate, eye, center, up, coeff, LIGHT, 'Renders/Moon', moon_shader
+    rotate, eye, center, up, coeff, LIGHT, 'Renders/Jupiter', jupiter_shader
   )
 
