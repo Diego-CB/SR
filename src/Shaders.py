@@ -6,7 +6,7 @@
   Shaders.py
   - implementation of shaders
 
-  Last modified (yy-mm-dd): 2022-09-16
+  Last modified (yy-mm-dd): 2022-09-17
 --------------------------------------
 '''
 
@@ -24,8 +24,8 @@ def __getIntensity(L:V3, baricentric:tuple, normals:tuple):
   iA = nA.normalize() * L
   iB = nB.normalize() * L
   iC = nC.normalize() * L
-  return abs(iA * w + iB * u + iC * v)
-  
+  return iA * w + iB * u + iC * v
+
 def gouraud(render:Render, **kwargs):
   '''Implementation of gouraud algorithm (shader)'''
   w, u, v = kwargs['bari']
@@ -121,9 +121,9 @@ def jupiter_shader(render:Render, **kwargs):
     r, g, b = DARK
 
   return color(
-    round(r * i),
-    round(g * i),
-    round(b * i),
+    max(min(round(r * i), 255), 0),
+    max(min(round(g * i), 255), 0),
+    max(min(round(b * i), 255), 0),
     normalized=False
   )
 

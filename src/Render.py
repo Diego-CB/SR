@@ -6,7 +6,7 @@
   Render.py (Object)
   - Object used to render a bmp image
 
-  Last modified (yy-mm-dd): 2022-09-08
+  Last modified (yy-mm-dd): 2022-09-17
 --------------------------------------
 '''
 
@@ -288,7 +288,7 @@ class Render(object):
         temp = model.vertices[actual_v[0] - 1]
         temp = self.__transform_vertex(temp)
         face_vertex.append(temp)
-        normal_vertex.append(V3(*model.n_vertices[actual_v[0] - 1]))
+        normal_vertex.append(V3(*model.n_vertices[actual_v[2] - 1]))
 
         if self.texture:
           temp_texture = V3(*model.tverctices[actual_v[1] - 1])
@@ -348,6 +348,7 @@ class Render(object):
             self,
             normals=normals,
             texture_coords = t_vertices,
+            vertices= vertices,
             bari = (w, u, v),
             light = V3(*L),
             coords = (x, y),

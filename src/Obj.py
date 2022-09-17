@@ -6,7 +6,7 @@
   Obj.py (Object)
   - Object used to read .obj models
 
-  Last modified (yy-mm-dd): 2022-07-31
+  Last modified (yy-mm-dd): 2022-09-17
 --------------------------------------
 '''
 
@@ -64,5 +64,3 @@ class Obj(object):
               lambda v: v != '', value.split(' ')
             ))
           ])
-
-    if len(self.n_vertices) == 0: self.n_vertices = self.vertices
