@@ -41,9 +41,9 @@ def gouraud(render:Render, **kwargs):
 
   except:
     return color(
-      round(255 * i),
-      round(255 * i),
-      round(255 * i),
+      max(min(round(255 * i), 255), 0),
+      max(min(round(255 * i), 255), 0),
+      max(min(round(255 * i), 255), 0),
       normalized=False
     )
 
