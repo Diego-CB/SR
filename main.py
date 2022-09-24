@@ -42,14 +42,14 @@ if __name__ == '__main__':
   center = (0, 0, 0)
   eye = (0, 0, 1)
   up = (0, 1, 0)
-  coeff = 0.0001
+  coeff = 0.001
 
   paintModel(
     model, texture, transform, scale, 
     rotate, eye, center, up, coeff, 
-    LIGHT, SR
+    LIGHT, SR, gouraud
   )
-  gl.glFinish('./Renders/Jupiter')
+  gl.glFinish('./Renders/scene')
 
 
   # moon - model
@@ -57,15 +57,15 @@ if __name__ == '__main__':
   texture = './models/Moon/moon2.bmp'
 
   LIGHT = (0, 0, 1) # x y z
-  SIZE = 0.25
+  SIZE = 0.35
   rotate = (
     0,
     0,
     0
   )
   transform = (
-    0.8,
-    -0.8,
+    0.58,
+    -0.6,
     0
   )
   scale = (SIZE, SIZE, SIZE)
@@ -73,9 +73,9 @@ if __name__ == '__main__':
   paintModel(
     model, texture, transform, scale, 
     rotate, eye, center, up, coeff, 
-    LIGHT, SR
+    LIGHT, SR, moon_shader
   )
-  gl.glFinish('./Renders/Jupiter')
+  gl.glFinish('./Renders/scene')
 
 
   # Atronaut - model
@@ -84,15 +84,15 @@ if __name__ == '__main__':
 
   LIGHT = (-1, 0, 1) # x y z
   W = 200
-  SIZE = 0.17
+  SIZE = 0.14
   rotate = (
     pi * 1/7,
     pi * 1/8,
     0
   )
   transform = (
-    0.60,
-    0.15,
+    0.65,
+    0.2,
     0
   )
   scale = (SIZE, SIZE, SIZE)
@@ -100,67 +100,59 @@ if __name__ == '__main__':
   paintModel(
     model, texture, transform, scale, 
     rotate, eye, center, up, coeff, 
-    LIGHT, SR
+    LIGHT, SR, astronaut
   )
-  gl.glFinish('./Renders/Jupiter')
+  gl.glFinish('./Renders/scene')
 
-else:
-
-  # Satelite
+  # Satelite - model
   model = './models/NoText/Satellite.obj'
   texture = None
+  SR.texture = None
 
   LIGHT = (0, 0, 1) # x y z
-  W = 400
-  SIZE = 1
+  SIZE = 0.6
   rotate = (
     pi * 1/8,
     pi * 1/3,
-    0
+    -pi * 1/9
   )
   transform = (
-    0,
-    0,
+    -0.45,
+    -0.6,
     0
   )
   scale = (SIZE, SIZE, SIZE)
 
-  center = (0, 0, 0)
-  eye = (0, 0, 1)
-  up = (0, 1, 0)
-  coeff = 0.0001
-
   paintModel(
-    model, texture, W, transform, scale, 
-    rotate, eye, center, up, coeff, LIGHT, 'Renders/Jupiter'
+    model, texture, transform, scale, 
+    rotate, eye, center, up, coeff, 
+    LIGHT, SR, satelite
   )
+  gl.glFinish('./Renders/scene')
 
-  # Ship
+
+  # Ship - model
   model = './models/SpaceX/f.obj'
   texture = './models/SpaceX/mat.bmp'
 
   LIGHT = (0, 1, 0) # y z x
-  W = 200
-  SIZE = 0.2
+  SIZE = 0.075
   rotate = (
-    pi * 1/8,
-    pi * 1/6,
+    pi * 1/7,
+    -pi * 1/6,
     0
   )
   transform = (
-    0,
-    0,
+    0.2,
+    -0.1,
     0
   )
   scale = (SIZE, SIZE, SIZE)
 
-  center = (0, 0, 0)
-  eye = (0, 0, 1)
-  up = (0, 1, 0)
-  coeff = 0.0001
-
   paintModel(
-    model, texture, W, transform, scale, 
-    rotate, eye, center, up, coeff, LIGHT, 'Renders/Jupiter'
+    model, texture, transform, scale, 
+    rotate, eye, center, up, coeff, 
+    LIGHT, SR, starship
   )
+  gl.glFinish('./Renders/scene')
 

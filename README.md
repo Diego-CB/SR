@@ -54,8 +54,8 @@
 ## 🕹️ Getting Started
 
 1. Ejecute el archivo `main.py`.
-2. Si no existen errores en ejecución, se escribirá un achivo `Jupiter.bmp` con la imagen resultante en la carpeta **`Renders`**.
-  > path de la imagen: `./Renders/Jupiter.bmp`
+2. Si no existen errores en ejecución, se escribirá un achivo `scene.bmp` con la imagen resultante en la carpeta **`Renders`**.
+  > path de la imagen: `./Renders/scene.bmp`
 
 ## 🤓 Autor
 
