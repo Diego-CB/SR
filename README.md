@@ -6,20 +6,21 @@
 
 ## ✅ Rúbrica:
 
-  - [ ] 10 puntos por cada modelo que se cargue y renderize. Máximo de 5 modelos
+  - [x] 10 puntos por cada modelo que se cargue y renderize. Máximo de 5 modelos
     - Pueden poner los modelos que quieran, pero solo los primeros 5 valen puntos
     - Su modelo debe estar texturizado o tener materiales asignados para que valga puntos (shaders estan bien tambien)
     - También debe estar coherente mente ubicado en el mundo (transformaciones)
     
-  - [ ] 5 puntos por cada shader distinto que se aplique a un modelo. Máximo 5 shaders
+  - [x] 5 puntos por cada shader distinto que se aplique a un modelo. Máximo 5 shaders
     - Aplicar el mismo shader a más de un modelo sólo les da puntos la primera vez
     - El shader no debe ser trivial y debe ser significativamente distinto a los demás shaders en su escena
 
   - [ ] 20 puntos por implementar mapas normales o bump mapping
     - Es suficiente con que lo apliquen a un solo modelo. No puede ser un modelo trivial
     
-  - [ ] 0 - 20 puntos según la complejidad del modelo más complejo (20 es muy complejo, algo cómo un personaje, 0 es algo como un cubo o una pirámide)
-  - [ ] 0 - 20 puntos según la estética de la escena (20 es una escena que se mira muy bien y no deja espacios en negro, 0 es un cubo en un fondo negro)
+  - 0 - 20 puntos según la complejidad del modelo más complejo (20 es muy complejo, algo cómo un personaje, 0 es algo como un cubo o una pirámide)
+
+  - 0 - 20 puntos según la estética de la escena (20 es una escena que se mira muy bien y no deja espacios en negro, 0 es un cubo en un fondo negro)
 
 ## 🗃️ Estructura de Archivos
 

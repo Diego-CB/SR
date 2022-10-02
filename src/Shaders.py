@@ -81,27 +81,15 @@ def satelite(render:Render, **kwargs):
 
 def isPrime(x):
   return (
-    # (x % 3 == 0)
     (x % 5 == 0)
     or (x % 7 == 0)
     or (x % 11 == 0)
-    # or (x % 13 == 0)
-    # or (x % 17 == 0)
-    # or (x % 19 == 0)
-    # or (x % 23 == 0)
-    # or (x % 29 == 0)
   )
 def starship(render:Render, **kwargs):
   x, y = kwargs['coords']
   w, u, v = kwargs['bari']
   nA, nB, nC = kwargs['normals']
   i = nA.normalize() * kwargs['light'].normalize()
-
-  if isPrime(x) or isPrime(y):
-    tA, tB, tC = kwargs['texture_coords']
-    tx = tA.x * w + tB.x * u + tC.x * v
-    ty = tA.y * w + tB.y * u + tC.y * v
-    return render.texture.get_color(tx, ty, i)
 
   r = max(min(round(255 * i), 255), 0)
   g = max(min(round(255 * i), 255), 0)
@@ -115,10 +103,9 @@ def starship(render:Render, **kwargs):
 
 def moon_shader(render:Render, **kwargs):
   x, y = kwargs['coords']
-  if x % 7 == 0 and y % 7 == 0: return color(0, 0, .7)
 
   w, u, v = kwargs['bari']
-  i = __getIntensity(kwargs['light'], (w, u, v), kwargs['normals'])
+  i = 1 - (__getIntensity(kwargs['light'], (w, u, v), kwargs['normals']))
 
   tA, tB, tC = kwargs['texture_coords']
   tx = tA.x * w + tB.x * u + tC.x * v
@@ -127,8 +114,8 @@ def moon_shader(render:Render, **kwargs):
   r, g, b = render.texture.get_color_astronaut(tx, ty, i)
 
   return color(
-    round(255 * 0.7) if r < (255 * .2) else r,
-    round(255 * 0.7) if g < (255 * .2) else g,
+    r,
+    g,
     b,
     normalized=False
   )

@@ -20,12 +20,13 @@ if __name__ == '__main__':
   gl.glInit()
   gl.glCreateWindow(1500, 1500)
   SR = gl.setBG('./models/bg.bmp')
+  gl.glFinish('./Renders/scene')
 
   # Earth - model
   model = './models/E/Globe.obj'
   texture = './models/E/Albedo-diffuse_Low-end.bmp'
 
-  LIGHT = (0, 0, 50) # x y z
+  LIGHT = (-20, 15, 65) # x y z
   SIZE = 0.06
   rotate = (
     0,
