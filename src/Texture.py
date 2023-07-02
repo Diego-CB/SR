@@ -55,3 +55,14 @@ class Texture:
       b = max(min(round(p[0] * intensity), 255), 0),
       normalized=False
     )
+
+  def get_color_astronaut(self, tx, ty, intensity=1):
+    x = round(tx * self.width) - 1
+    y = round(ty * self.height) - 1
+    p = self.pixels[y][x]
+
+    r = max(min(round(p[2] * intensity), 255), 0)
+    g = max(min(round(p[1] * intensity), 255), 0)
+    b = max(min(round(p[0] * intensity), 255), 0)
+
+    return (r, g, b)

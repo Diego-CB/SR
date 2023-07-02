@@ -95,7 +95,8 @@ def glFinish(fileName):
   write_bmp(fileName + '.bmp', SR.framebuffer)
   print(f'-> FrameBuffer written succesfully to: {fileName}.bmp')
 
-def setBG(img_path):
+def setBG(img_path) -> Render:
   sr_isInit()
   img = Texture(img_path)
   SR.framebuffer = img.pixels
+  return SR
